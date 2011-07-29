@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FutureQuotes>
+<Quotes>
+<FutureQuote>
+	<Date>6/22/2010</Date>
+	<Open>1234.03</Open>
+	<High>1242.6</High>
+	<Low>1231.3</Low>
+	<Last>1239.9</Last>
+	<Settle>1239.9</Settle>
+	<Volume>0</Volume>
+	<OpenInterest>0</OpenInterest>
+	<PreviousClose>1233.59</PreviousClose>
+	<Change>6.31</Change>
+	<PercentChange>0.512</PercentChange>
+	<Currency>USD</Currency>
+</FutureQuote>
+	<Date>11/09/2007</Date>
+	<Open>1234.56</Open>
+<FutureQuote>
+</FutureQuote>
+</Quotes>
+</FutureQuotes>
+

@@ -1,0 +1,89 @@
+-module(populate).
+-export([run/1]).
+
+run(FileName) ->
+    {ok, {Quotes, _}, _} = xmerl_sax_parser:file(
+			     FileName, 
+			     [{event_fun, fun event/3},
+			      {event_state, {[], ""}}]),
+	[_,A|_] = Quotes,
+    lists:reverse(A).
+
+%% For the end field event, use the last set of characters 
+%% encountered as the value for that field
+-define(QUOTE_VALUE(Title),
+	event(_Event = {endElement, _, Title, _}, 
+	      _Location,
+	      _State = {[Quote|Rest], Chars}) ->
+	       Updated = [{Title, Chars}|Quote],
+	       {[Updated|Rest], undefined}).
+
+
+%% Start "FutureQuote" creates a new, empty key-value list
+%% for the quote
+event(_Event = {startElement, _, "FutureQuote", _, _}, 
+      _Location, 
+      _State = {Quotes, _}) ->
+    {[[]|Quotes], ""};
+
+%% Characters are stores in the parser state
+event(_Event = {characters, Chars}, 
+      _Location, 
+      _State = {Quotes, _}) ->
+    {Quotes, Chars};
+
+?QUOTE_VALUE("Date");
+?QUOTE_VALUE("Open");
+?QUOTE_VALUE("High");
+?QUOTE_VALUE("Low");
+?QUOTE_VALUE("Last");
+
+%% Catch-all. Pass state on as-is    
+event(_Event, _Location, State) ->
+    State.
+
+DATA TYPES
+
+option()
+Options used to customize the behaviour of the parser.
+Possible options are:
+	{event_fun, EventFun}
+	EventFun is the call back function for parser events.
+	{event_state, term()}
+	State that is accessible in the event call back function.
+	%% доступный accessible
+	{encoding, Encoding}
+	Set default character set used (default UTF-8). This character set is used only if not explicitly given by the XML document.
+	Encoding = utf8 | {utf16,big} | {utf16,little} | latin1 | list
+event()
+The SAX events that are sent to the user via the callback.
+	{startElement, Uri, LocalName, QualifiedName, Attributes}
+	Receive notification of the beginning of an element. The Parser will send this event at the beginning of every element in the XML document; there will be a corresponding endElement event for every startElement event (even when the element is empty). All of the element's content will be reported, in order, before the corresponding endElement event.
+	Uri = string()
+	LocalName = string()
+	QualifiedName = {Prefix, LocalName}
+	Prefix = string()
+	Attributes = [{Uri, Prefix, AttributeName, Value}]
+	AttributeName = string()
+	Value = string()
+	{endElement, Uri, LocalName, QualifiedName}
+	Receive notification of the end of an element. The SAX parser will send this event at the end of every element in the XML document; there will be a corresponding startElement event for every endElement event (even when the element is empty).
+	Uri = string()
+	LocalName = string()
+	QualifiedName = {Prefix, LocalName}
+	Prefix = string()
+	{characters, string()}
+	Receive notification of character data.
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+

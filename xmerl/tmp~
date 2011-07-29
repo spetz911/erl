@@ -1,0 +1,84 @@
+<daemons>
+		<rdr_processor> <!-- имя исполняемого файла -->
+			<!--
+				Прослушиваемый порт для входящих сообщений от
+				различных DPI ко всем возможным для текущего узла
+				процессорам и/или агрегаторам. Процессоры должны
+				слушать на всех присвоенных VIP, но только на
+				указанных для них портах.
+			-->
+			<listen>
+				<proto>tcp</proto>
+				<port>80</port>
+			</listen>
+
+			<!-- Адрес и протокол назначения для исходящего трафика -->
+			<destination>
+				<proto>tcp</proto>
+				<addr>192.168.0.10</addr>
+				<port>8090</port>
+			</destination>
+
+			<!--
+				Обработка протокола DPI (применимо только для
+				процессоров, игнорируется если указано для
+				агрегатора)
+			-->
+			<protocol>
+				<accept>User-Agent</accept>
+				<accept>Cookie</accept>
+				<accept>Referer</accept>
+			<protocol>
+
+			<!-- Log file path -->
+			<log>/var/log/rdr_processor_1.log</log>
+
+			<!-- UNIX сокет для системы управления кластером -->
+			<socket>/tmp/rdr_processor_1.sock</log>
+
+			<!--	
+				файл временного хранения сообщений в случае если
+				пропадает соединение с принимающей стороной.
+			-->
+			<buffer_file>/var/tdmn/rdr_buf_1</buffering>
+
+			<!--
+				Размер группы агрегирования сессий (применимо только
+				для процессоров, игнорируется если указано для
+				агрегатора)
+			-->
+			<touple_size>200</touple_size>
+
+			<!--
+				Описание фильтров (применимо только для
+				процессоров, игнорируется если указано для
+				агрегатора)
+			-->
+			<filter>
+				<!--
+					Список портов для учета HTTP сессий (только
+					если применимо для данного протокола DPI,
+					игнорируется в противном случае)
+				-->
+				<http_ports>80,8080</http_ports>
+				<urls mode='white' re='pcre'>
+					<url>^http://[\w\-\.]+\/?$</url>
+					<url>index\.(htm|html|php|pl)$</url>
+				</urls>
+				<block mode='black'>
+					<net>192.168.0.0/24</net>
+					<ip>10.10.0.1</ip>
+				</block>
+				<referer_timeout>3</referer_timeout>
+			</filter>
+		</rdr_processor>
+		<XXX_processor>
+			<!-- …..... -->
+		</XXX_processor>
+		<aggregator>
+			<!-- ….. -->
+		</aggregator>
+	</daemons>
+
+		<vip>192.168.0.1</vip>
+		<vip>192.168.0.2</vip>
