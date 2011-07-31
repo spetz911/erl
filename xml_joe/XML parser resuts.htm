@@ -1,0 +1,1509 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html><head><title>XML parser resuts</title></head>
+<body bgcolor="white">
+<h3>ex1</h3>
+<pre><b>
+&lt;?XML version="1.0" encoding="UTF-8" ?&gt;
+&lt;!DOCTYPE greeting [
+  &lt;!ELEMENT greeting (#PCDATA)&gt;
+]&gt;
+&lt;greeting&gt;Hello, world!&lt;/greeting&gt;
+
+</b></pre>
+<p>Parse succeeded
+<p>Dictionary
+<p>
+<pre>
+[{errors,[]},
+ {warnings,[]},
+ {ids,[]},
+ {idrefs,[]},
+ {top,"GREETING"},
+ {{rule,"GREETING"},pcdata}]
+</pre>
+<p>Parse tree
+<p>
+<pre>
+{"GREETING",[],{pcdata,"Hello, world!"}}
+</pre>
+<h3>ex2</h3>
+<pre><b>
+&lt;?XML version="1.0" ?&gt;
+&lt;!DOCTYPE greeting [
+  &lt;!ENTITY % pc "#PCDATA"&gt;
+  &lt;!ELEMENT greeting (%pc;)&gt;
+]&gt;
+&lt;greeting&gt;Hello, world!&lt;/greeting&gt;
+
+</b></pre>
+<p>Parse succeeded
+<p>Dictionary
+<p>
+<pre>
+[{errors,[]},
+ {warnings,[]},
+ {ids,[]},
+ {idrefs,[]},
+ {top,"GREETING"},
+ {{pent,"pc"},"#PCDATA"},
+ {{rule,"GREETING"},pcdata}]
+</pre>
+<p>Parse tree
+<p>
+<pre>
+{"GREETING",[],{pcdata,"Hello, world!"}}
+</pre>
+<h3>ex3</h3>
+<pre><b>
+&lt;?XML version="1.0" encoding="UTF-8" ?&gt;
+&lt;!DOCTYPE greeting [
+&lt;!ELEMENT greeting (title,text)&gt;
+&lt;!ELEMENT title (#PCDATA)&gt;
+&lt;!ELEMENT text (#PCDATA)&gt;
+]&gt;
+&lt;greeting&gt;
+&lt;title&gt;Section 1&lt;/title&gt;
+&lt;text&gt;Hello, world!&lt;/text&gt;
+&lt;/greeting&gt;
+</b></pre>
+<p>Parse succeeded
+<p>Dictionary
+<p>
+<pre>
+[{errors,[]},
+ {warnings,[]},
+ {ids,[]},
+ {idrefs,[]},
+ {top,"GREETING"},
+ {{rule,"GREETING"},{seq,{rule,"TITLE"},{seq,{rule,"TEXT"},nil}}},
+ {{rule,"TITLE"},pcdata},
+ {{rule,"TEXT"},pcdata}]
+</pre>
+<p>Parse tree
+<p>
+<pre>
+{"GREETING",
+ [],
+ [{"TITLE",[],{pcdata,"Section 1"}},{"TEXT",[],{pcdata,"Hello, world!"}}]}
+</pre>
+<h3>ex4</h3>
+<pre><b>
+&lt;?XML version="1.0" encoding="UTF-8" ?&gt;
+&lt;!DOCTYPE greeting [
+&lt;!ELEMENT greeting (paras)&gt;
+&lt;!ELEMENT paras (p+)&gt;
+&lt;!ELEMENT p (#PCDATA)&gt;
+]&gt;
+&lt;greeting&gt;
+&lt;paras&gt;
+&lt;p&gt;para1&lt;/p&gt;
+&lt;p&gt;para2&lt;/p&gt;
+&lt;/paras&gt;
+&lt;/greeting&gt;
+
+    </b></pre>
+<p>Parse succeeded
+<p>Dictionary
+<p>
+<pre>
+[{errors,[]},
+ {warnings,[]},
+ {ids,[]},
+ {idrefs,[]},
+ {top,"GREETING"},
+ {{rule,"GREETING"},{rule,"PARAS"}},
+ {{rule,"PARAS"},{plus,{rule,"P"}}},
+ {{rule,"P"},pcdata}]
+</pre>
+<p>Parse tree
+<p>
+<pre>
+{"GREETING",
+ [],
+ {"PARAS",[],[{"P",[],{pcdata,"para1"}},{"P",[],{pcdata,"para2"}}]}}
+</pre>
+<h3>ex5</h3>
+<pre><b>
+&lt;?XML version="1.0"?&gt;
+&lt;!DOCTYPE play SYSTEM "play.dtd"&gt;
+
+&lt;PLAY&gt;
+&lt;TITLE&gt;The Tragedy of Hamlet, Prince of Denmark&lt;/TITLE&gt;
+
+&lt;fm&gt;
+&lt;p&gt;Text placed in the public domain by Moby Lexical Tools, 1992.&lt;/p&gt;
+&lt;p&gt;SGML markup by Jon Bosak, 1992-1994.&lt;/p&gt;
+&lt;p&gt;XML version by Jon Bosak, 1996-1997.&lt;/p&gt;
+&lt;p&gt;This work may be freely copied and distributed worldwide.&lt;/p&gt;
+&lt;/fm&gt;
+
+
+&lt;PERSONAE&gt;
+&lt;TITLE&gt;Dramatis Personae&lt;/TITLE&gt;
+
+&lt;PERSONA&gt;CLAUDIUS, king of Denmark. &lt;/PERSONA&gt;
+&lt;PERSONA&gt;HAMLET, son to the late, and nephew to the present king.&lt;/PERSONA&gt;
+&lt;PGROUP&gt;
+&lt;PERSONA&gt;GUILDENSTERN&lt;/PERSONA&gt;
+&lt;PERSONA&gt;OSRIC&lt;/PERSONA&gt;
+&lt;GRPDESCR&gt;courtiers.&lt;/GRPDESCR&gt;
+&lt;/PGROUP&gt;
+
+&lt;/PERSONAE&gt;
+
+&lt;SCNDESCR&gt;SCENE  Denmark.&lt;/SCNDESCR&gt;
+
+&lt;PLAYSUBT&gt;HAMLET&lt;/PLAYSUBT&gt;
+
+&lt;ACT&gt;&lt;TITLE&gt;ACT I&lt;/TITLE&gt;
+
+&lt;SCENE&gt;&lt;TITLE&gt;SCENE I.  Elsinore. A platform before the castle.&lt;/TITLE&gt;
+&lt;STAGEDIR&gt;FRANCISCO at his post. Enter to him BERNARDO&lt;/STAGEDIR&gt;
+
+&lt;SPEECH&gt;
+&lt;SPEAKER&gt;BERNARDO&lt;/SPEAKER&gt;
+&lt;LINE&gt;Who's there?&lt;/LINE&gt;
+&lt;/SPEECH&gt;
+
+&lt;SPEECH&gt;
+&lt;SPEAKER&gt;PRINCE FORTINBRAS&lt;/SPEAKER&gt;
+&lt;LINE&gt;Let four captains&lt;/LINE&gt;
+&lt;LINE&gt;Bear Hamlet, like a soldier, to the stage;&lt;/LINE&gt;
+&lt;LINE&gt;For he was likely, had he been put on,&lt;/LINE&gt;
+&lt;LINE&gt;To have proved most royally: and, for his passage,&lt;/LINE&gt;
+&lt;LINE&gt;The soldiers' music and the rites of war&lt;/LINE&gt;
+&lt;LINE&gt;Speak loudly for him.&lt;/LINE&gt;
+&lt;LINE&gt;Take up the bodies: such a sight as this&lt;/LINE&gt;
+&lt;LINE&gt;Becomes the field, but here shows much amiss.&lt;/LINE&gt;
+&lt;LINE&gt;Go, bid the soldiers shoot.&lt;/LINE&gt;
+&lt;/SPEECH&gt;
+
+
+&lt;STAGEDIR&gt;A dead march. Exeunt, bearing off the dead
+bodies; after which a peal of ordnance is shot off&lt;/STAGEDIR&gt;
+&lt;/SCENE&gt;
+&lt;/ACT&gt;
+&lt;/PLAY&gt;
+</b></pre>
+<p>Parse succeeded
+<p>Dictionary
+<p>
+<pre>
+[{errors,[]},
+ {warnings,[]},
+ {ids,[]},
+ {idrefs,[]},
+ {top,"PLAY"},
+ {{gent,"amp"},"&#38;"},
+ {{rule,"PLAY"},
+  {seq,{rule,"TITLE"},
+       {seq,{rule,"FM"},
+            {seq,{rule,"PERSONAE"},
+                 {seq,{rule,"SCNDESCR"},
+                      {seq,{rule,"PLAYSUBT"},
+                           {seq,{question,{rule,"INDUCT"}},
+                                {seq,{question,{rule,"PROLOGUE"}},
+                                     {seq,
+                                         {plus,{rule,"ACT"}},
+                                         {seq,
+                                             {question,{rule,"EPILOGUE"}},
+                                             nil}}}}}}}}}},
+ {{rule,"TITLE"},pcdata},
+ {{rule,"FM"},{plus,{rule,"P"}}},
+ {{rule,"P"},pcdata},
+ {{rule,"PERSONAE"},
+  {seq,{rule,"TITLE"},
+       {seq,{plus,{alt,{rule,"PERSONA"},{alt,{rule,"PGROUP"},fail}}},nil}}},
+ {{rule,"PGROUP"},{seq,{plus,{rule,"PERSONA"}},{seq,{rule,"GRPDESCR"},nil}}},
+ {{rule,"PERSONA"},pcdata},
+ {{rule,"GRPDESCR"},pcdata},
+ {{rule,"SCNDESCR"},pcdata},
+ {{rule,"PLAYSUBT"},pcdata},
+ {{rule,"INDUCT"},
+  {seq,{rule,"TITLE"},
+       {seq,{star,{rule,"SUBTITLE"}},
+            {seq,{alt,{plus,{rule,"SCENE"}},
+                      {alt,{plus,{alt,{rule,"SPEECH"},
+                                      {alt,
+                                          {rule,"STAGEDIR"},
+                                          {alt,{rule,"SUBHEAD"},fail}}}},
+                           fail}},
+                 nil}}}},
+ {{rule,"ACT"},
+  {seq,{rule,"TITLE"},
+       {seq,{star,{rule,"SUBTITLE"}},
+            {seq,{question,{rule,"PROLOGUE"}},
+                 {seq,{plus,{rule,"SCENE"}},
+                      {seq,{question,{rule,"EPILOGUE"}},nil}}}}}},
+ {{rule,"SCENE"},
+  {seq,{rule,"TITLE"},
+       {seq,{star,{rule,"SUBTITLE"}},
+            {seq,{plus,{alt,{rule,"SPEECH"},
+                            {alt,{rule,"STAGEDIR"},
+                                 {alt,{rule,"SUBHEAD"},fail}}}},
+                 nil}}}},
+ {{rule,"PROLOGUE"},
+  {seq,{rule,"TITLE"},
+       {seq,{star,{rule,"SUBTITLE"}},
+            {seq,{plus,{alt,{rule,"STAGEDIR"},{alt,{rule,"SPEECH"},fail}}},
+                 nil}}}},
+ {{rule,"EPILOGUE"},
+  {seq,{rule,"TITLE"},
+       {seq,{star,{rule,"SUBTITLE"}},
+            {seq,{plus,{alt,{rule,"STAGEDIR"},{alt,{rule,"SPEECH"},fail}}},
+                 nil}}}},
+ {{rule,"SPEECH"},
+  {seq,{plus,{rule,"SPEAKER"}},
+       {seq,{plus,{alt,{rule,"LINE"},
+                       {alt,{rule,"STAGEDIR"},{alt,{rule,"SUBHEAD"},fail}}}},
+            nil}}},
+ {{rule,"SPEAKER"},pcdata},
+ {{rule,"LINE"},{plus,{alt,{rule,"STAGEDIR"},{alt,pcdata,fail}}}},
+ {{rule,"STAGEDIR"},pcdata},
+ {{rule,"SUBTITLE"},pcdata},
+ {{rule,"SUBHEAD"},pcdata}]
+</pre>
+<p>Parse tree
+<p>
+<pre>
+{"PLAY",
+ [],
+ [{"TITLE",[],{pcdata,"The Tragedy of Hamlet, Prince of Denmark"}},
+  {"FM",
+   [],
+   [{"P",
+     [],
+     {pcdata,"Text placed in the public domain by Moby Lexical Tools, 1992."}},
+    {"P",[],{pcdata,"SGML markup by Jon Bosak, 1992-1994."}},
+    {"P",[],{pcdata,"XML version by Jon Bosak, 1996-1997."}},
+    {"P",
+     [],
+     {pcdata,"This work may be freely copied and distributed worldwide."}}]},
+  {"PERSONAE",
+   [],
+   [{"TITLE",[],{pcdata,"Dramatis Personae"}},
+    [{"PERSONA",[],{pcdata,"CLAUDIUS, king of Denmark. "}},
+     {"PERSONA",
+      [],
+      {pcdata,"HAMLET, son to the late, and nephew to the present king."}},
+     {"PGROUP",
+      [],
+      [[{"PERSONA",[],{pcdata,"GUILDENSTERN"}},
+        {"PERSONA",[],{pcdata,"OSRIC"}}],
+       {"GRPDESCR",[],{pcdata,"courtiers."}}]}]]},
+  {"SCNDESCR",[],{pcdata,"SCENE  Denmark."}},
+  {"PLAYSUBT",[],{pcdata,"HAMLET"}},
+  [],
+  [],
+  [{"ACT",
+    [],
+    [{"TITLE",[],{pcdata,"ACT I"}},
+     [],
+     [],
+     [{"SCENE",
+       [],
+       [{"TITLE",
+         [],
+         {pcdata,"SCENE I.  Elsinore. A platform before the castle."}},
+        [],
+        [{"STAGEDIR",
+          [],
+          {pcdata,"FRANCISCO at his post. Enter to him BERNARDO"}},
+         {"SPEECH",
+          [],
+          [[{"SPEAKER",[],{pcdata,"BERNARDO"}}],
+           [{"LINE",[],[{pcdata,"Who's there?"}]}]]},
+         {"SPEECH",
+          [],
+          [[{"SPEAKER",[],{pcdata,"PRINCE FORTINBRAS"}}],
+           [{"LINE",[],[{pcdata,"Let four captains"}]},
+            {"LINE",
+             [],
+             [{pcdata,"Bear Hamlet, like a soldier, to the stage;"}]},
+            {"LINE",[],[{pcdata,"For he was likely, had he been put on,"}]},
+            {"LINE",
+             [],
+             [{pcdata,"To have proved most royally: and, for his passage,"}]},
+            {"LINE",[],[{pcdata,"The soldiers' music and the rites of war"}]},
+            {"LINE",[],[{pcdata,"Speak loudly for him."}]},
+            {"LINE",[],[{pcdata,"Take up the bodies: such a sight as this"}]},
+            {"LINE",
+             [],
+             [{pcdata,"Becomes the field, but here shows much amiss."}]},
+            {"LINE",[],[{pcdata,"Go, bid the soldiers shoot."}]}]]},
+         {"STAGEDIR",
+          [],
+          {pcdata,"A dead march. Exeunt, bearing off the dead\nbodies; after which a peal of ordnance is shot off"}}]]}],
+     []]}],
+  []]}
+</pre>
+<h3>ex6</h3>
+<pre><b>
+&lt;?XML version="1.0"?&gt;
+&lt;!DOCTYPE foobar [
+ &lt;!ENTITY % abc "aaa"&gt;
+ &lt;!ENTITY lme "LM Ericsson"&gt;
+ &lt;!ENTITY % ISOLat2 SYSTEM "ISOlat1.xml" &gt;
+ &lt;!ELEMENT foobar (#PCDATA)&gt;
+ %ISOLat2;
+ ]&gt;
+&lt;foobar&gt;
+I work at &#38;lme; &#38;cent; hoho
+&lt;/foobar&gt;
+</b></pre>
+<p>Parse succeeded
+<p>Warnings<p>
+<pre>
+["line 15 ","old style comment dropped  cent sign "]<br>
+["line 14 ","old style comment dropped  inverted exclamation mark "]<br>
+["line 13 ","old style comment dropped  no-break space "]<br>
+</pre>
+<p>Dictionary
+<p>
+<pre>
+[{errors,[]},
+ {warnings,[["line 15 ","old style comment dropped  cent sign "],
+            ["line 14 ",
+             "old style comment dropped  inverted exclamation mark "],
+            ["line 13 ","old style comment dropped  no-break space "]]},
+ {ids,[]},
+ {idrefs,[]},
+ {top,"FOOBAR"},
+ {{pent,"abc"},"aaa"},
+ {{gent,"lme"},"LM Ericsson"},
+ {{pent,"ISOLat2"},
+  "&lt;!-- (C) International Organization for Standardization 1986\n     Permission to copy in any form is granted for use with\n     conforming SGML systems and applications as defined in\n     ISO 8879, provided this notice is included in all copies.\n     This has been extended for use with HTML to cover the full\n     set of codes in the range 160-255 decimal.\n--&gt;\n&lt;!-- Character entity set. Typical invocation:\n     &lt;!ENTITY % ISOlat1 PUBLIC\n       \"ISO 8879-1986//ENTITIES Added Latin 1//EN//HTML\"&gt;\n     %ISOlat1;\n--&gt;\n    &lt;!ENTITY nbsp   CDATA \"&#38;#160;\" -- no-break space --&gt;\n    &lt;!ENTITY iexcl  CDATA \"&#38;#161;\" -- inverted exclamation mark --&gt;\n    &lt;!ENTITY cent   CDATA \"&#38;#162;\" -- cent sign --&gt;\n\n&lt;!-- lots of lines omitted --&gt;\n"},
+ {{rule,"FOOBAR"},pcdata},
+ {{gent,"nbsp"},"&#38;#160;"},
+ {{gent,"iexcl"},"&#38;#161;"},
+ {{gent,"cent"},"&#38;#162;"}]
+</pre>
+<p>Parse tree
+<p>
+<pre>
+{"FOOBAR",[],{pcdata,"\nI work at LM Ericsson \242 hoho\n"}}
+</pre>
+<h3>ex7</h3>
+<pre><b>
+&lt;?XML version="1.0" encoding="UTF-8" ?&gt;
+&lt;!DOCTYPE greeting [
+&lt;!ELEMENT greeting (termdef,list,form)&gt;
+&lt;!ELEMENT termdef (#PCDATA)&gt;
+&lt;!ELEMENT list (#PCDATA)&gt;
+&lt;!ELEMENT form (#PCDATA)&gt;
+&lt;!ATTLIST termdef
+          id      ID      #REQUIRED
+          name    CDATA   #IMPLIED&gt;
+&lt;!ATTLIST list
+          type    (bullets|ordered|glossary)  "ordered"&gt;
+&lt;!ATTLIST form
+          pqr     IDREF   #REQUIRED
+          method  CDATA   #FIXED "POST"&gt;
+
+&lt;!ELEMENT b (#PCDATA)&gt;
+]&gt;
+&lt;greeting&gt;
+&lt;termdef id="foo" name="Hejho"&gt;para1&lt;/termdef&gt;
+&lt;list type="ordered"&gt;para2&lt;/list&gt;
+&lt;form method="POST" pqr="foo"&gt;para3&lt;/form&gt;
+&lt;/greeting&gt;
+
+    </b></pre>
+<p>Parse succeeded
+<p>Dictionary
+<p>
+<pre>
+[{errors,[]},
+ {warnings,[]},
+ {ids,["foo"]},
+ {idrefs,["foo"]},
+ {top,"GREETING"},
+ {{rule,"GREETING"},
+  {seq,{rule,"TERMDEF"},{seq,{rule,"LIST"},{seq,{rule,"FORM"},nil}}}},
+ {{rule,"TERMDEF"},pcdata},
+ {{rule,"LIST"},pcdata},
+ {{rule,"FORM"},pcdata},
+ {{attr,"TERMDEF"},[{"id",{id,required}},{"name",{cdata,implied}}]},
+ {{attr,"LIST"},
+  [{"type",{enum,["bullets","ordered","glossary"],{default,"ordered"}}}]},
+ {{attr,"FORM"},[{"pqr",{idref,required}},{"method",{cdata,{fixed,"POST"}}}]},
+ {{rule,"B"},pcdata}]
+</pre>
+<p>Parse tree
+<p>
+<pre>
+{"GREETING",
+ [],
+ [{"TERMDEF",[{"id","foo"},{"name","Hejho"}],{pcdata,"para1"}},
+  {"LIST",[{"type","ordered"}],{pcdata,"para2"}},
+  {"FORM",[{"pqr","foo"},{"method","POST"}],{pcdata,"para3"}}]}
+</pre>
+<h3>ex8</h3>
+<pre><b>
+&lt;?XML version="1.0" encoding="UTF-8" ?&gt;
+&lt;!DOCTYPE greeting [
+&lt;!ELEMENT greeting (termdef,list,form)&gt;
+&lt;!ELEMENT termdef (#PCDATA)&gt;
+&lt;!ELEMENT list (#PCDATA)&gt;
+&lt;!ELEMENT form (#PCDATA)&gt;
+&lt;!ATTLIST termdef
+          id      ID      #REQUIRED
+          name    CDATA   #IMPLIED&gt;
+&lt;!ATTLIST list
+	  p       IDREF   #REQUIRED
+          type    (bullets|ordered|glossary)  "ordered"&gt;
+&lt;!ATTLIST form
+          method  CDATA   #FIXED "POST"&gt;
+
+&lt;!ELEMENT b (#PCDATA)&gt;
+]&gt;
+&lt;greeting&gt;
+&lt;termdef id="foo" name="Hejho"&gt;para1&lt;/termdef&gt;
+&lt;list type="ordered" p="foo"&gt;para2&lt;/list&gt;
+&lt;form method="POST"&gt;para3&lt;/form&gt;
+&lt;/greeting&gt;
+
+    </b></pre>
+<p>Parse succeeded
+<p>Dictionary
+<p>
+<pre>
+[{errors,[]},
+ {warnings,[]},
+ {ids,["foo"]},
+ {idrefs,["foo"]},
+ {top,"GREETING"},
+ {{rule,"GREETING"},
+  {seq,{rule,"TERMDEF"},{seq,{rule,"LIST"},{seq,{rule,"FORM"},nil}}}},
+ {{rule,"TERMDEF"},pcdata},
+ {{rule,"LIST"},pcdata},
+ {{rule,"FORM"},pcdata},
+ {{attr,"TERMDEF"},[{"id",{id,required}},{"name",{cdata,implied}}]},
+ {{attr,"LIST"},
+  [{"p",{idref,required}},
+   {"type",{enum,["bullets","ordered","glossary"],{default,"ordered"}}}]},
+ {{attr,"FORM"},[{"method",{cdata,{fixed,"POST"}}}]},
+ {{rule,"B"},pcdata}]
+</pre>
+<p>Parse tree
+<p>
+<pre>
+{"GREETING",
+ [],
+ [{"TERMDEF",[{"id","foo"},{"name","Hejho"}],{pcdata,"para1"}},
+  {"LIST",[{"p","foo"},{"type","ordered"}],{pcdata,"para2"}},
+  {"FORM",[{"method","POST"}],{pcdata,"para3"}}]}
+</pre>
+<h3>ex9</h3>
+<pre><b>
+&lt;?XML version="1.0" ?&gt;
+&lt;!DOCTYPE greeting [
+&lt;!ELEMENT greeting (IMG|br)+&gt;
+&lt;!ELEMENT br EMPTY&gt;
+&lt;!ELEMENT IMG EMPTY&gt;
+&lt;!ATTLIST IMG
+          align  CDATA  #IMPLIED
+          src    CDATA  #IMPLIED&gt;
+
+]&gt;
+&lt;greeting&gt;
+&lt;IMG align="left" src="http://www.w3.org/Icons/WWW/w3c_home" /&gt;
+&lt;br/&gt;
+&lt;br&gt;&lt;/br&gt;
+&lt;/greeting&gt;
+
+    </b></pre>
+<p>Parse succeeded
+<p>Dictionary
+<p>
+<pre>
+[{errors,[]},
+ {warnings,[]},
+ {ids,[]},
+ {idrefs,[]},
+ {top,"GREETING"},
+ {{rule,"GREETING"},{plus,{alt,{rule,"IMG"},{alt,{rule,"BR"},fail}}}},
+ {{rule,"BR"},empty},
+ {{rule,"IMG"},empty},
+ {{attr,"IMG"},[{"align",{cdata,implied}},{"src",{cdata,implied}}]}]
+</pre>
+<p>Parse tree
+<p>
+<pre>
+{"GREETING",
+ [],
+ [{"IMG",[{"align","left"},{"src","http://www.w3.org/Icons/WWW/w3c_home"}],[]},
+  {"BR",[],[]},
+  {"BR",[],[]}]}
+</pre>
+<h3>ex10</h3>
+<pre><b>
+&lt;?XML version='1.0'?&gt;
+&lt;!DOCTYPE test [
+&lt;!ELEMENT test (#PCDATA) &gt;
+&lt;!ENTITY % xx '&#38;#37;zz;'&gt;
+&lt;!ENTITY % zz '&#38;#60;!ENTITY tricky "error-prone" &gt;' &gt;
+%xx;
+]&gt;
+&lt;test&gt;This sample shows a &#38;tricky; method.&lt;/test&gt;
+</b></pre>
+<p>Parse succeeded
+<p>Dictionary
+<p>
+<pre>
+[{errors,[]},
+ {warnings,[]},
+ {ids,[]},
+ {idrefs,[]},
+ {top,"TEST"},
+ {{rule,"TEST"},pcdata},
+ {{pent,"xx"},"&#38;#37;zz;"},
+ {{pent,"zz"},"&#38;#60;!ENTITY tricky \"error-prone\" &gt;"},
+ {{gent,"tricky"},"error-prone"}]
+</pre>
+<p>Parse tree
+<p>
+<pre>
+{"TEST",[],{pcdata,"This sample shows a error-prone method."}}
+</pre>
+<h3>ex11</h3>
+<pre><b>
+&lt;?XML version="1.0"?&gt;
+&lt;!DOCTYPE foobar [
+ &lt;!ENTITY lme "LM Ericsson"&gt;
+ &lt;!ENTITY % include SYSTEM "inc2.xml" &gt;
+ &lt;!ELEMENT foobar (#PCDATA)&gt;
+ %include;
+ ]&gt;
+&lt;foobar&gt;
+I work at &#38;lme; &#38;nbsp; hoho
+&lt;/foobar&gt;
+</b></pre>
+<p>Parse succeeded
+<p>Warnings<p>
+<pre>
+["line 6 ","old style comment dropped  no-break space "]<br>
+</pre>
+<p>Dictionary
+<p>
+<pre>
+[{errors,[]},
+ {warnings,[["line 6 ","old style comment dropped  no-break space "]]},
+ {ids,[]},
+ {idrefs,[]},
+ {top,"FOOBAR"},
+ {{gent,"lme"},"LM Ericsson"},
+ {{pent,"include"},
+  "&lt;!-- Character entity set. Typical invocation:\n     &lt;!ENTITY % silly PUBLIC\n       \"ISO 8879-1986//ENTITIES Added Latin 1//EN//HTML\"&gt;\n     %silly;\n--&gt;\n    &lt;!ENTITY nbsp   CDATA \"&#38;#160;\" -- no-break space --&gt;\n"},
+ {{rule,"FOOBAR"},pcdata},
+ {{gent,"nbsp"},"&#38;#160;"}]
+</pre>
+<p>Parse tree
+<p>
+<pre>
+{"FOOBAR",[],{pcdata,"\nI work at LM Ericsson \240 hoho\n"}}
+</pre>
+<h3>ex12</h3>
+<pre><b>
+&lt;?XML version="1.0"?&gt;
+&lt;!DOCTYPE foobar [
+ &lt;!ENTITY lme "LM Ericsson"&gt;
+ &lt;!ENTITY % abc SYSTEM "inc1.xml" &gt;
+ &lt;!ELEMENT foobar (#PCDATA)&gt;
+ %abc;
+ ]&gt;
+&lt;foobar&gt;
+I work at &#38;lme; &#38;nbsp; hoho
+&lt;/foobar&gt;
+</b></pre>
+<p>Parse succeeded
+<p>Dictionary
+<p>
+<pre>
+[{errors,[]},
+ {warnings,[]},
+ {ids,[]},
+ {idrefs,[]},
+ {top,"FOOBAR"},
+ {{gent,"lme"},"LM Ericsson"},
+ {{pent,"abc"},
+  "&lt;!ENTITY nbsp   CDATA \"&#38;#160;\" &gt;\n&lt;!ENTITY iexcl  CDATA \"&#38;#161;\" &gt;\n&lt;!ENTITY cent   CDATA \"&#38;#162;\" &gt;\n"},
+ {{rule,"FOOBAR"},pcdata},
+ {{gent,"nbsp"},"&#38;#160;"},
+ {{gent,"iexcl"},"&#38;#161;"},
+ {{gent,"cent"},"&#38;#162;"}]
+</pre>
+<p>Parse tree
+<p>
+<pre>
+{"FOOBAR",[],{pcdata,"\nI work at LM Ericsson \240 hoho\n"}}
+</pre>
+<h3>ex13</h3>
+<pre><b>
+&lt;?XML version="1.0"?&gt;
+&lt;!DOCTYPE web "SYSTEM" "web.xml"&gt;
+&lt;web&gt;
+&lt;name&gt;web&lt;/name&gt;
+&lt;vsn major="2" minor="1" /&gt;
+&lt;summary&gt;A program for submitting a program to the Erlang web&lt;/summary&gt;
+&lt;author&gt;Joe Armstrong&lt;/author&gt;
+&lt;email&gt;joe@cslab.ericsson.se&lt;/email&gt;
+&lt;visibility readers="world" /&gt;
+&lt;keywords&gt;
+&lt;key&gt;publishing&lt;/key&gt;
+&lt;key&gt;html&lt;/key&gt;
+&lt;key&gt;www&lt;/key&gt;
+&lt;key&gt;web&lt;/key&gt;
+&lt;/keywords&gt;
+&lt;files&gt;
+&lt;file&gt;web.erl&lt;/file&gt;
+&lt;file&gt;web.html&lt;/file&gt;
+&lt;/files&gt;
+&lt;publish&gt;
+&lt;entry&gt;
+&lt;section&gt;Web utilities&lt;/section&gt;
+&lt;ref&gt;web.html&lt;/ref&gt;
+&lt;text&gt;This is a program for adding entries to the 
+WWW. Using web provides location transparency etc."
+&lt;/text&gt;
+&lt;/entry&gt;
+&lt;/publish&gt;
+&lt;/web&gt;
+</b></pre>
+<p>Parse succeeded
+<p>Dictionary
+<p>
+<pre>
+[{errors,[]},
+ {warnings,[]},
+ {ids,[]},
+ {idrefs,[]},
+ {top,"WEB"},
+ {{rule,"WEB"},
+  {seq,{rule,"NAME"},
+       {seq,{rule,"VSN"},
+            {seq,{rule,"SUMMARY"},
+                 {seq,{rule,"AUTHOR"},
+                      {seq,{rule,"EMAIL"},
+                           {seq,{rule,"VISIBILITY"},
+                                {seq,{rule,"KEYWORDS"},
+                                     {seq,
+                                         {rule,"FILES"},
+                                         {seq,{rule,"PUBLISH"},nil}}}}}}}}}},
+ {{rule,"NAME"},pcdata},
+ {{rule,"VSN"},empty},
+ {{attr,"VSN"},[{"major",{cdata,required}},{"minor",{cdata,required}}]},
+ {{rule,"SUMMARY"},pcdata},
+ {{rule,"AUTHOR"},pcdata},
+ {{rule,"EMAIL"},pcdata},
+ {{rule,"VISIBILITY"},empty},
+ {{attr,"VISIBILITY"},[{"readers",{cdata,required}}]},
+ {{rule,"KEYWORDS"},{plus,{rule,"KEY"}}},
+ {{rule,"KEY"},pcdata},
+ {{rule,"FILES"},{plus,{rule,"FILE"}}},
+ {{rule,"FILE"},pcdata},
+ {{rule,"PUBLISH"},{plus,{rule,"ENTRY"}}},
+ {{rule,"ENTRY"},
+  {seq,{rule,"SECTION"},{seq,{rule,"REF"},{seq,{rule,"TEXT"},nil}}}},
+ {{rule,"SECTION"},pcdata},
+ {{rule,"REF"},pcdata},
+ {{rule,"TEXT"},pcdata}]
+</pre>
+<p>Parse tree
+<p>
+<pre>
+{"WEB",
+ [],
+ [{"NAME",[],{pcdata,"web"}},
+  {"VSN",[{"major","2"},{"minor","1"}],[]},
+  {"SUMMARY",
+   [],
+   {pcdata,"A program for submitting a program to the Erlang web"}},
+  {"AUTHOR",[],{pcdata,"Joe Armstrong"}},
+  {"EMAIL",[],{pcdata,"joe@cslab.ericsson.se"}},
+  {"VISIBILITY",[{"readers","world"}],[]},
+  {"KEYWORDS",
+   [],
+   [{"KEY",[],{pcdata,"publishing"}},
+    {"KEY",[],{pcdata,"html"}},
+    {"KEY",[],{pcdata,"www"}},
+    {"KEY",[],{pcdata,"web"}}]},
+  {"FILES",
+   [],
+   [{"FILE",[],{pcdata,"web.erl"}},{"FILE",[],{pcdata,"web.html"}}]},
+  {"PUBLISH",
+   [],
+   [{"ENTRY",
+     [],
+     [{"SECTION",[],{pcdata,"Web utilities"}},
+      {"REF",[],{pcdata,"web.html"}},
+      {"TEXT",
+       [],
+       {pcdata,"This is a program for adding entries to the \nWWW. Using web provides location transparency etc.\"\n"}}]}]}]}
+</pre>
+<h3>bug1</h3>
+<pre><b>
+&lt;?XML version="1.0" ?&gt;
+&lt;!DOCTYPE greeting [
+&lt;!ELEMENT greeting (IMG|br)+&gt;
+&lt;!ELEMENT br EMPTY&gt;
+&lt;!ELEMENT IMG EMPTY&gt;
+&lt;!ATTLIST IMG
+          align  CDATA  #IMPLIED
+          src    CDATA  #IMPLIED&gt;
+
+]&gt;
+&lt;greeting&gt;
+&lt;!-- &lt;IMG align="left" src="http://www.w3.org/Icons/WWW/w3c_home" /&gt; 
+
+&lt;br/&gt;
+&lt;/greeting&gt;
+
+    </b></pre>
+<p>Parse failed
+<p>Errors<p>
+<pre>
+["line 17 ","*** Unexpected EOF in ","Comment"]<br>
+</pre>
+<h3>bug2</h3>
+<pre><b>
+&lt;?XML version="1.0" ?&gt;
+&lt;!DOCTYPE greeting [
+&lt;!ELEMENT greeting (IMG|br)+&gt;
+&lt;!ELEMENT br EMPTY&gt;
+&lt;!ELEMENT IMG EMPTY&gt;
+&lt;!ATTLIST IMG
+          align  CDATA  #IMPLIED
+          src    CDATA  #IMPLIED&gt;
+
+]&gt;
+&lt;greeting&gt;
+&lt;br/&gt;
+
+&lt;br/&gt;
+&lt;/greeting&gt;
+
+    </b></pre>
+<p>Parse succeeded
+<p>Dictionary
+<p>
+<pre>
+[{errors,[]},
+ {warnings,[]},
+ {ids,[]},
+ {idrefs,[]},
+ {top,"GREETING"},
+ {{rule,"GREETING"},{plus,{alt,{rule,"IMG"},{alt,{rule,"BR"},fail}}}},
+ {{rule,"BR"},empty},
+ {{rule,"IMG"},empty},
+ {{attr,"IMG"},[{"align",{cdata,implied}},{"src",{cdata,implied}}]}]
+</pre>
+<p>Parse tree
+<p>
+<pre>
+{"GREETING",[],[{"BR",[],[]},{"BR",[],[]}]}
+</pre>
+<h3>bug3</h3>
+<pre><b>
+&lt;?XML version="1.0" ?&gt;
+&lt;!DOCTYPE greeting [
+&lt;!ELEMENT greeting (IMG|br)+&gt;
+&lt;!ELEMENT br EMPTY&gt;
+&lt;!ELEMENT IMG EMPTY&gt;
+&lt;!ATTLIST IMG
+          align  CDATA  #IMPLIED
+          src    CDATA  #IMPLIED&gt;
+
+]&gt;
+&lt;greeting&gt;
+&lt;IMG align="left" src="http://www.w3.org/Icons/WWW/w3c_home" /&gt;
+&lt;br/&gt;
+&lt;br&gt;&lt;/br&gt;
+
+
+    </b></pre>
+<p>Parse failed
+<p>Errors<p>
+<pre>
+["Parse error",
+ {found,{[{"IMG",
+           [{"align","left"},{"src","http://www.w3.org/Icons/WWW/w3c_home"}],
+           []},
+          {"BR",[],[]},
+          {"BR",[],[]}],
+         []},
+        "no end tag for ",
+        "GREETING",
+        " start tag was in line ",
+        11}]<br>
+</pre>
+<h3>bug4</h3>
+<pre><b>
+&lt;?XML version="1.0" RMD='INTERNAL'?&gt;
+&lt;!-- declarations for &lt;head&gt; &#38; &lt;body&gt; --&gt;
+&lt;!DOCTYPE fooybar [
+ &lt;!ELEMENT br EMPTY&gt;
+ &lt;!ELEMENT %name.para; %content.para; &gt;
+ &lt;!ELEMENT container ANY&gt;
+
+ &lt;!ELEMENT spec (front, body, back?)&gt;
+ &lt;!ELEMENT div1 (head, (p | list | note)*, div2*)&gt;
+ &lt;!ELEMENT head (%head.content; | %head.misc;)*&gt;
+
+ &lt;!ELEMENT p (#PCDATA|a|ul|b|i|em)*&gt;
+ &lt;!ELEMENT p (#PCDATA | %font; | %phrase; | %special; | %form;)* &gt;
+ &lt;!ELEMENT b (#PCDATA)&gt;
+
+ &lt;!ATTLIST termdef
+           id      ID      #REQUIRED
+           name    CDATA   #IMPLIED&gt;
+ &lt;!ATTLIST list
+           type    (bullets|ordered|glossary)  "ordered"&gt;
+ &lt;!ATTLIST form
+           method  CDATA   #FIXED "POST"&gt;
+
+
+ &lt;!ENTITY % draft 'INCLUDE' &gt;
+ &lt;!ENTITY % final 'IGNORE' &gt;
+
+ &lt;![%draft;[
+ &lt;!ELEMENT book (comments*, title, body, supplements?)&gt;
+ ]]&gt;
+ &lt;![%final;[
+ &lt;!ELEMENT book (title, body, supplements?)&gt;
+ ]]&gt;
+ &lt;!ENTITY % ISOLat2
+          SYSTEM "http://www.xml.com/iso/isolat2-xml.entities" &gt;
+ %ISOLat2;
+ &lt;!ENTITY Pub-Status "This is a pre-release of the
+  specification."&gt;
+
+ &lt;!ENTITY open-hatch
+          SYSTEM "http://www.textuality.com/boilerplate/OpenHatch.xml"&gt;
+ &lt;!ENTITY open-hatch
+          PUBLIC "-//Textuality//TEXT Standard open-hatch boilerplate//EN"
+          "http://www.textuality.com/boilerplate/OpenHatch.xml"&gt;
+ &lt;!ENTITY hatch-pic
+          SYSTEM "../grafix/OpenHatch.gif"
+          NDATA gif &gt;
+
+ &lt;?XML ENCODING='UTF-8'?&gt;
+ &lt;?XML ENCODING='EUC-JP'?&gt;
+
+ &lt;!ENTITY lt     "&#38;#60;"&gt;
+ &lt;!ENTITY gt     "&#38;#62;"&gt;
+ &lt;!ENTITY amp    "&#38;#38;"&gt;
+ &lt;!ENTITY apos   "'"&gt;
+ &lt;!ENTITY quot   '"'&gt;
+]&gt;
+
+ &lt;![CDATA[&lt;greeting&gt;Hello, world!&lt;/greeting&gt;]]&gt;
+ &lt;termdef id="dt-dog" term="dog"&gt;
+	foo
+ &lt;/termdef&gt;
+ &lt;IMG align="left"
+  src="http://www.w3.org/Icons/WWW/w3c_home" /&gt;
+ &lt;br&gt;&lt;/br&gt;
+ &lt;br/&gt;
+</b></pre>
+<p>Parse failed
+<p>Errors<p>
+<pre>
+["line 50 ",
+ "unrecognised dtd element",
+ ['?',"XML","ENCODING",'=',{lit,50,"EUC-JP"},'?']]<br>
+["line 49 ",
+ "unrecognised dtd element",
+ ['?',"XML","ENCODING",'=',{lit,49,"UTF-8"},'?']]<br>
+["line 45 ",
+ "unrecognised dtd element",
+ ['!',
+  "ENTITY",
+  "hatch-pic",
+  "SYSTEM",
+  {lit,46,"../grafix/OpenHatch.gif"},
+  "NDATA",
+  "gif"]]<br>
+["line 42 ",
+ "unrecognised dtd element",
+ ['!',
+  "ENTITY",
+  "open-hatch",
+  "PUBLIC",
+  {lit,43,"-//Textuality//TEXT Standard open-hatch boilerplate//EN"},
+  {lit,44,"http://www.textuality.com/boilerplate/OpenHatch.xml"}]]<br>
+["line 40 ",
+ "unrecognised dtd element",
+ ['!',
+  "ENTITY",
+  "open-hatch",
+  "SYSTEM",
+  {lit,41,"http://www.textuality.com/boilerplate/OpenHatch.xml"}]]<br>
+["line 34 ",
+ "cannot read entity ",
+ "SYSTEM",
+ "http://www.xml.com/iso/isolat2-xml.entities"]<br>
+["line 31 ",
+ "unrecognised dtd element",
+ ['!',
+  '[',
+  "IGNORE",
+  '[',
+  {tag,32,"!ELEMENT book (title, body, supplements?)"},
+  ']',
+  ']']]<br>
+["line 28 ",
+ "unrecognised dtd element",
+ ['!',
+  '[',
+  "INCLUDE",
+  '[',
+  {tag,29,"!ELEMENT book (comments*, title, body, supplements?)"},
+  ']',
+  ']']]<br>
+["line 13 ",
+ "Error in Model expecting:",
+ "'(' or a string",
+ " found ",
+ ['|','|','|',')','*']]<br>
+["line 13 ","undefined PE ","form"]<br>
+["line 13 ","undefined PE ","special"]<br>
+["line 13 ","undefined PE ","phrase"]<br>
+["line 13 ","undefined PE ","font"]<br>
+["line 10 ",
+ "Error in Model expecting:",
+ "'(' or a string",
+ " found ",
+ ['|',')','*']]<br>
+["line 10 ","undefined PE ","head.misc"]<br>
+["line 10 ","undefined PE ","head.content"]<br>
+["line 6 ","Error in Model expecting:","( or EMPTY"," found ",["ANY"]]<br>
+["line 5 ","unrecognised dtd element",['!',"ELEMENT"]]<br>
+["line 5 ","undefined PE ","content.para"]<br>
+["line 5 ","undefined PE ","name.para"]<br>
+</pre>
+<h3>bug5</h3>
+<pre><b>
+&lt;?XML version="1.0" encoding="UTF-8" ?&gt;
+&lt;!DOCTYPE greeting [
+&lt;!ELEMENT greeting (termdef,list,form)&gt;
+&lt;!ELEMENT termdef (#PCDATA)&gt;
+&lt;!ELEMENT list (#PCDATA)&gt;
+&lt;!ELEMENT form (#PCDATA)&gt;
+&lt;!ATTLIST termdef
+          id      ID      #REQUIRED
+          name    CDATA   #IMPLIED&gt;
+&lt;!ATTLIST list
+	  p       IDREF   #REQUIRED
+          type    (bullets|ordered|glossary)  "ordered"&gt;
+&lt;!ATTLIST form
+          method  CDATA   #FIXED "POST"&gt;
+
+&lt;!ELEMENT b (#PCDATA)&gt;
+]&gt;
+&lt;greeting&gt;
+&lt;termdef id="foo" name="Hejho"&gt;para1&lt;/termdef&gt;
+&lt;list type="ordered" p="foo"&gt;para2&lt;/list&gt;
+&lt;form method="POST"&gt;para3&lt;/form&gt;
+&lt;/greeting&gt;
+
+    </b></pre>
+<p>Parse succeeded
+<p>Dictionary
+<p>
+<pre>
+[{errors,[]},
+ {warnings,[]},
+ {ids,["foo"]},
+ {idrefs,["foo"]},
+ {top,"GREETING"},
+ {{rule,"GREETING"},
+  {seq,{rule,"TERMDEF"},{seq,{rule,"LIST"},{seq,{rule,"FORM"},nil}}}},
+ {{rule,"TERMDEF"},pcdata},
+ {{rule,"LIST"},pcdata},
+ {{rule,"FORM"},pcdata},
+ {{attr,"TERMDEF"},[{"id",{id,required}},{"name",{cdata,implied}}]},
+ {{attr,"LIST"},
+  [{"p",{idref,required}},
+   {"type",{enum,["bullets","ordered","glossary"],{default,"ordered"}}}]},
+ {{attr,"FORM"},[{"method",{cdata,{fixed,"POST"}}}]},
+ {{rule,"B"},pcdata}]
+</pre>
+<p>Parse tree
+<p>
+<pre>
+{"GREETING",
+ [],
+ [{"TERMDEF",[{"id","foo"},{"name","Hejho"}],{pcdata,"para1"}},
+  {"LIST",[{"p","foo"},{"type","ordered"}],{pcdata,"para2"}},
+  {"FORM",[{"method","POST"}],{pcdata,"para3"}}]}
+</pre>
+<h3>bug6</h3>
+<pre><b>
+&lt;?XML version="1.0" RMD='INTERNAL'?&gt;
+&lt;!-- declarations for &lt;head&gt; &#38; &lt;body&gt; --&gt;
+&lt;!DOCTYPE fooybar [
+ &lt;!ELEMENT br EMPTY&gt;
+ &lt;!ELEMENT %name.para; %content.para; &gt;
+ &lt;!ELEMENT container ANY&gt;
+
+ &lt;!ELEMENT spec (front, body, back?)&gt;
+ &lt;!ELEMENT div1 (head, (p | list | note)*, div2*)&gt;
+ &lt;!ELEMENT head (%head.content; | %head.misc;)*&gt;
+
+ &lt;!ELEMENT p (#PCDATA|a|ul|b|i|em)*&gt;
+ &lt;!ELEMENT p (#PCDATA | %font; | %phrase; | %special; | %form;)* &gt;
+ &lt;!ELEMENT b (#PCDATA)&gt;
+
+ &lt;!ATTLIST termdef
+           id      ID      #REQUIRED
+           name    CDATA   #IMPLIED&gt;
+ &lt;!ATTLIST list
+           type    (bullets|ordered|glossary)  "ordered"&gt;
+ &lt;!ATTLIST form
+           method  CDATA   #FIXED "POST"&gt;
+
+
+ &lt;!ENTITY % draft 'INCLUDE' &gt;
+ &lt;!ENTITY % final 'IGNORE' &gt;
+
+
+ &lt;!ENTITY % ISOLat2
+          SYSTEM "http://www.xml.com/iso/isolat2-xml.entities" &gt;
+ %ISOLat2;
+ &lt;!ENTITY Pub-Status "This is a pre-release of the
+  specification."&gt;
+
+ &lt;!ENTITY open-hatch
+          SYSTEM "http://www.textuality.com/boilerplate/OpenHatch.xml"&gt;
+ &lt;!ENTITY open-hatch
+          PUBLIC "-//Textuality//TEXT Standard open-hatch boilerplate//EN"
+          "http://www.textuality.com/boilerplate/OpenHatch.xml"&gt;
+ &lt;!ENTITY hatch-pic
+          SYSTEM "../grafix/OpenHatch.gif"
+          NDATA gif &gt;
+
+ &lt;?XML ENCODING='UTF-8'?&gt;
+ &lt;?XML ENCODING='EUC-JP'?&gt;
+
+ &lt;!ENTITY lt     "&#38;#60;"&gt;
+ &lt;!ENTITY gt     "&#38;#62;"&gt;
+ &lt;!ENTITY amp    "&#38;#38;"&gt;
+ &lt;!ENTITY apos   "'"&gt;
+ &lt;!ENTITY quot   '"'&gt;
+]&gt;
+
+ &lt;![CDATA[&lt;greeting&gt;Hello, world!&lt;/greeting&gt;]]&gt;
+ &lt;termdef id="dt-dog" term="dog"&gt;
+	foo
+ &lt;/termdef&gt;
+ &lt;IMG align="left"
+  src="http://www.w3.org/Icons/WWW/w3c_home" /&gt;
+ &lt;br&gt;&lt;/br&gt;
+ &lt;br/&gt;
+</b></pre>
+<p>Parse failed
+<p>Errors<p>
+<pre>
+["line 45 ",
+ "unrecognised dtd element",
+ ['?',"XML","ENCODING",'=',{lit,45,"EUC-JP"},'?']]<br>
+["line 44 ",
+ "unrecognised dtd element",
+ ['?',"XML","ENCODING",'=',{lit,44,"UTF-8"},'?']]<br>
+["line 40 ",
+ "unrecognised dtd element",
+ ['!',
+  "ENTITY",
+  "hatch-pic",
+  "SYSTEM",
+  {lit,41,"../grafix/OpenHatch.gif"},
+  "NDATA",
+  "gif"]]<br>
+["line 37 ",
+ "unrecognised dtd element",
+ ['!',
+  "ENTITY",
+  "open-hatch",
+  "PUBLIC",
+  {lit,38,"-//Textuality//TEXT Standard open-hatch boilerplate//EN"},
+  {lit,39,"http://www.textuality.com/boilerplate/OpenHatch.xml"}]]<br>
+["line 35 ",
+ "unrecognised dtd element",
+ ['!',
+  "ENTITY",
+  "open-hatch",
+  "SYSTEM",
+  {lit,36,"http://www.textuality.com/boilerplate/OpenHatch.xml"}]]<br>
+["line 29 ",
+ "cannot read entity ",
+ "SYSTEM",
+ "http://www.xml.com/iso/isolat2-xml.entities"]<br>
+["line 13 ",
+ "Error in Model expecting:",
+ "'(' or a string",
+ " found ",
+ ['|','|','|',')','*']]<br>
+["line 13 ","undefined PE ","form"]<br>
+["line 13 ","undefined PE ","special"]<br>
+["line 13 ","undefined PE ","phrase"]<br>
+["line 13 ","undefined PE ","font"]<br>
+["line 10 ",
+ "Error in Model expecting:",
+ "'(' or a string",
+ " found ",
+ ['|',')','*']]<br>
+["line 10 ","undefined PE ","head.misc"]<br>
+["line 10 ","undefined PE ","head.content"]<br>
+["line 6 ","Error in Model expecting:","( or EMPTY"," found ",["ANY"]]<br>
+["line 5 ","unrecognised dtd element",['!',"ELEMENT"]]<br>
+["line 5 ","undefined PE ","content.para"]<br>
+["line 5 ","undefined PE ","name.para"]<br>
+</pre>
+<h3>bug7</h3>
+<pre><b>
+&lt;?XML version="1.0"?&gt;
+&lt;!DOCTYPE web [
+&lt;!ELEMENT web (name,vsn,summary,author,email,visibility,keywords,files,
+	publish)&gt;
+&lt;!ELEMENT name (#PCDATA)&gt;
+&lt;!ELEMENT vsn EMPTY&gt;
+&lt;!ATTLIST vsn
+	  maj CDATA #REQUIRED
+	  min CDATA #REQUIRED&gt;
+
+
+&lt;!ELEMENT summary (#PCDATA)&gt;
+&lt;web&gt;
+&lt;name&gt;web&lt;/name&gt;
+&lt;vsn maj="2" minor="1" /&gt;
+&lt;summary&gt;A program for submitting a program to the Erlang web&lt;/summary&gt;
+&lt;author&gt;Joe Armstrong&lt;/author&gt;
+&lt;email&gt;joe@cslab.ericsson.se&lt;/email&gt;
+&lt;visibility readers=world /&gt;
+&lt;keywords&gt;
+&lt;key&gt;publishing&lt;/key&gt;
+&lt;key&gt;html&lt;/key&gt;
+&lt;key&gt;www&lt;/key&gt;
+&lt;key&gt;web&lt;/key&gt;
+&lt;keywords&gt;
+&lt;files&gt;
+&lt;file&gt;web.erl&lt;/file&gt;
+&lt;file&gt;web.html&lt;/file&gt;
+&lt;/files&gt;
+&lt;publish&gt;
+&lt;in&gt;utilities&lt;/in&gt;
+&lt;entry&gt;
+&lt;section&gt;Web utilities&lt;/section&gt;
+&lt;ref&gt;web.html&lt;/ref&gt;
+&lt;text&gt;This is a program for adding entries to the 
+WWW. Using &lt;b&gt;web&lt;/b&gt; provides location transparency etc."
+&lt;/text&gt;
+&lt;/entry&gt;
+&lt;/publish&gt;
+&lt;abstract&gt;This is a program for submitting entries to ..." &lt;/abstract&gt;
+&lt;/web&gt;
+</b></pre>
+<p>Parse failed
+<p>Errors<p>
+<pre>
+["line 42 ","*** Unexpected EOF in ","in a tag"]<br>
+</pre>
+<h3>bug8</h3>
+<pre><b>
+&lt;?XML version="1.0" encoding="UTF-8" ?&gt;
+&lt;!DOCTYPE greeting [
+&lt;!ELEMENT greeting (paras)&gt;
+&lt;!ELEMENT paras (p+)&gt;
+&lt;!ELEMENT p (#PCDATA)&gt;
+&lt;!ATTLIST (p|x)               -- header or data cell --
+  %attrs;                          -- %coreattrs, %i18n, %events --
+  abbr        CDATA      #IMPLIED  -- abbreviation for header cell --
+  axis        CDATA      #IMPLIED  -- names groups of related headers--
+  axes        IDREFS     #IMPLIED  -- list of id's for header cells --
+  rowspan     NUMBER     1         -- number of rows spanned by cell --
+  colspan     NUMBER     1         -- number of cols spanned by cell --
+  %cellhalign;                     -- horizontal alignment in cells --
+  %cellvalign;                     -- vertical alignment in cells --
+  width       %Pixels;   #IMPLIED  -- suggested width for cell --
+  height      %Pixels;   #IMPLIED  -- suggested height for cell --
+  &gt;
+
+]&gt;
+&lt;greeting&gt;
+&lt;paras&gt;
+&lt;p&gt;para1&lt;/p&gt;
+&lt;p&gt;para2&lt;/p&gt;
+&lt;/paras&gt;
+&lt;/greeting&gt;
+
+    </b></pre>
+<p>Parse failed
+<p>Errors<p>
+<pre>
+["line 6 ",
+ " bad attribute",
+ ["Cannot parse ATTLIST elements",
+  ["p",
+   '|',
+   "x",
+   ')',
+   "abbr",
+   "CDATA",
+   '#',
+   "IMPLIED",
+   "axis",
+   "CDATA",
+   '#',
+   "IMPLIED",
+   "axes",
+   "IDREFS",
+   '#',
+   "IMPLIED",
+   "rowspan",
+   "NUMBER",
+   '1',
+   "colspan",
+   "NUMBER",
+   '1',
+   "width",
+   '#',
+   "IMPLIED",
+   "height",
+   '#',
+   "IMPLIED"]]]<br>
+["line 6 ","undefined PE ","Pixels"]<br>
+["line 6 ","undefined PE ","Pixels"]<br>
+["line 6 ","undefined PE ","cellvalign"]<br>
+["line 6 ","undefined PE ","cellhalign"]<br>
+["line 6 ","undefined PE ","attrs"]<br>
+</pre>
+<p>Warnings<p>
+<pre>
+["line 16 ","old style comment dropped  suggested height for cell "]<br>
+["line 15 ","old style comment dropped  suggested width for cell "]<br>
+["line 14 ","old style comment dropped  vertical alignment in cells "]<br>
+["line 13 ","old style comment dropped  horizontal alignment in cells "]<br>
+["line 12 ","old style comment dropped  number of cols spanned by cell "]<br>
+["line 11 ","old style comment dropped  number of rows spanned by cell "]<br>
+["line 10 ","old style comment dropped  list of id's for header cells "]<br>
+["line 9 ","old style comment dropped  names groups of related headers"]<br>
+["line 8 ","old style comment dropped  abbreviation for header cell "]<br>
+["line 7 ","old style comment dropped  %coreattrs, %i18n, %events "]<br>
+["line 6 ","old style comment dropped  header or data cell "]<br>
+</pre>
+<h3>bug9</h3>
+<pre><b>
+&lt;?XML version="1.0"&gt;
+&lt;!DOCTYPE greeting [
+&lt;!ATTLIST a
+  axes         list of is'd
+  &gt;
+]&gt;
+
+
+    </b></pre>
+<p>Parse failed
+<p>Errors<p>
+<pre>
+["line 9 ","*** Unexpected EOF in ","in a tag"]<br>
+["line 9 ","*** Unexpected EOF in ","Literal which started in line 4"]<br>
+</pre>
+<h3>bug10</h3>
+<pre><b>
+&lt;?XML version="1.0"&gt;
+
+
+    </b></pre>
+<p>Parse failed
+<p>Errors<p>
+<pre>
+["line 1 ","expecting a terminating ? found ",[]]<br>
+</pre>
+<h3>bug11</h3>
+<pre><b>
+&lt;?XML version="1.0" encoding="UTF-8" ?&gt;
+&lt;!DOCTYPE greeting [
+&lt;!ELEMENT greeting (paras)&gt;
+&lt;!ELEMENT paras (p+)&gt;
+&lt;!ELEMENT p (#PCDATA)&gt;
+&lt;!ATTLIST (p|x)               -- header or data cell --
+  %attrs;                          -- %coreattrs, %i18n, %events --
+  abbr        CDATA      #IMPLIED  -- abbreviation for header cell --
+  axis        CDATA      #IMPLIED  -- names groups of related headers--
+  axes        IDREFS     #IMPLIED  -- list of id's for header cells --
+  rowspan     NUMBER     1         -- number of rows spanned by cell --
+  colspan     NUMBER     1         -- number of cols spanned by cell --
+  %cellhalign;                     -- horizontal alignment in cells --
+  %cellvalign;                     -- vertical alignment in cells --
+  width       %Pixels;   #IMPLIED  -- suggested width for cell --
+  height      %Pixels;   #IMPLIED  -- suggested height for cell --
+  &gt;
+
+]&gt;
+&lt;greeting&gt;
+&lt;paras&gt;
+&lt;p&gt;para1&lt;/p&gt;
+&lt;p&gt;para2&lt;/p&gt;
+&lt;/paras&gt;
+&lt;/greeting&gt;
+
+    </b></pre>
+<p>Parse failed
+<p>Errors<p>
+<pre>
+["line 6 ",
+ " bad attribute",
+ ["Cannot parse ATTLIST elements",
+  ["p",
+   '|',
+   "x",
+   ')',
+   "abbr",
+   "CDATA",
+   '#',
+   "IMPLIED",
+   "axis",
+   "CDATA",
+   '#',
+   "IMPLIED",
+   "axes",
+   "IDREFS",
+   '#',
+   "IMPLIED",
+   "rowspan",
+   "NUMBER",
+   '1',
+   "colspan",
+   "NUMBER",
+   '1',
+   "width",
+   '#',
+   "IMPLIED",
+   "height",
+   '#',
+   "IMPLIED"]]]<br>
+["line 6 ","undefined PE ","Pixels"]<br>
+["line 6 ","undefined PE ","Pixels"]<br>
+["line 6 ","undefined PE ","cellvalign"]<br>
+["line 6 ","undefined PE ","cellhalign"]<br>
+["line 6 ","undefined PE ","attrs"]<br>
+</pre>
+<p>Warnings<p>
+<pre>
+["line 16 ","old style comment dropped  suggested height for cell "]<br>
+["line 15 ","old style comment dropped  suggested width for cell "]<br>
+["line 14 ","old style comment dropped  vertical alignment in cells "]<br>
+["line 13 ","old style comment dropped  horizontal alignment in cells "]<br>
+["line 12 ","old style comment dropped  number of cols spanned by cell "]<br>
+["line 11 ","old style comment dropped  number of rows spanned by cell "]<br>
+["line 10 ","old style comment dropped  list of id's for header cells "]<br>
+["line 9 ","old style comment dropped  names groups of related headers"]<br>
+["line 8 ","old style comment dropped  abbreviation for header cell "]<br>
+["line 7 ","old style comment dropped  %coreattrs, %i18n, %events "]<br>
+["line 6 ","old style comment dropped  header or data cell "]<br>
+</pre>
+<h3>fail1</h3>
+<pre><b>
+&lt;?XML version="1.0" encoding="UTF-8" ?&gt;
+&lt;!DOCTYPE greeting [
+&lt;!ELEMENT greeting (termdef,list,form)&gt;
+&lt;!ELEMENT termdef (#PCDATA)&gt;
+&lt;!ELEMENT list (#PCDATA)&gt;
+&lt;!ELEMENT form (#PCDATA)&gt;
+&lt;!ATTLIST termdef
+          id      ID      #REQUIRED
+          name    CDATA   #IMPLIED&gt;
+&lt;!ATTLIST list
+	  p       IDREF   #REQUIRED
+          type    (bullets|ordered|glossary)  "ordered"&gt;
+&lt;!ATTLIST form
+          method  CDATA   #FIXED "POST"&gt;
+
+&lt;!ELEMENT b (#PCDATA)&gt;
+]&gt;
+&lt;greeting&gt;
+&lt;termdef id="foo" name="Hejho"&gt;para1&lt;/termdef&gt;
+&lt;list type="ordered"&gt;para2&lt;/list&gt;
+&lt;form method="POST"&gt;para3&lt;/form&gt;
+&lt;/greeting&gt;
+
+    </b></pre>
+<p>Parse failed
+<p>Errors<p>
+<pre>
+["there are some ID conflicts, the following IDs were defined but have no corresponding IDREFs",
+ ["foo"]]<br>
+["line 20 ","bad attribute",idref,"is required but no value supplied"]<br>
+</pre>
+<h3>fail2</h3>
+<pre><b>
+&lt;?XML version="1.0" encoding="UTF-8" ?&gt;
+&lt;!DOCTYPE greeting [
+&lt;!ELEMENT greeting (termdef,list,form)&gt;
+&lt;!ELEMENT termdef (#PCDATA)&gt;
+&lt;!ELEMENT list (#PCDATA)&gt;
+&lt;!ELEMENT form (#PCDATA)&gt;
+&lt;!ATTLIST termdef
+          id      ID      #REQUIRED
+          name    CDATA   #IMPLIED&gt;
+&lt;!ATTLIST list
+	  p       IDREF   #REQUIRED
+          type    (bullets|ordered|glossary)  "ordered"&gt;
+&lt;!ATTLIST form
+          method  CDATA   #FIXED "POST"&gt;
+
+&lt;!ELEMENT b (#PCDATA)&gt;
+]&gt;
+&lt;greeting&gt;
+&lt;termdef id="foo" name="Hejho"&gt;para1&lt;/termdef&gt;
+&lt;list type="ordered" p="foo1"&gt;para2&lt;/list&gt;
+&lt;form method="POST"&gt;para3&lt;/form&gt;
+&lt;/greeting&gt;
+
+    </b></pre>
+<p>Parse failed
+<p>Errors<p>
+<pre>
+["there are some ID conflicts, the following IDs were defined but have no corresponding IDREFs",
+ ["foo"]]<br>
+</pre>
+<h3>fail3</h3>
+<pre><b>
+&lt;?XML version="1.0" encoding="UTF-8" ?&gt;
+&lt;!DOCTYPE greeting [
+&lt;!ELEMENT greeting (termdef,list,form)&gt;
+&lt;!ELEMENT termdef (#PCDATA)&gt;
+&lt;!ELEMENT list (#PCDATA)&gt;
+&lt;!ELEMENT form (#PCDATA)&gt;
+&lt;!ATTLIST termdef
+          id      ID      #REQUIRED
+          name    CDATA   #IMPLIED&gt;
+&lt;!ATTLIST list
+          type    (bullets|ordered|glossary)  "ordered"&gt;
+&lt;!ATTLIST form
+          method  CDATA   #FIXED "POST"&gt;
+
+&lt;!ELEMENT b (#PCDATA)&gt;
+]&gt;
+&lt;greeting&gt;
+&lt;termdef id="foo" name="Hejho"&gt;para1&lt;/termdef&gt;
+&lt;list type="ordered"&gt;para2&lt;/list&gt;
+&lt;form method="aa"&gt;para3&lt;/form&gt;
+&lt;/greeting&gt;
+
+    </b></pre>
+<p>Parse failed
+<p>Errors<p>
+<pre>
+["there are some ID conflicts, the following IDs were defined but have no corresponding IDREFs",
+ ["foo"]]<br>
+["line 20 ",
+ "bad attribute",
+ "expecting the #FIXED string ",
+ "POST",
+ " found ",
+ "aa"]<br>
+</pre>
+</body>
+</html>

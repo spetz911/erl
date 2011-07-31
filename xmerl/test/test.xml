@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <t1>content1</t1>
+  <t2>content2</t2>
+  <t3>content3</t3>
+
+  <parent>
+    <c1>child one</c1>
+    <parent2>
+      <list>content1
+	<t0>el1</t0>
+	<t0>el2</t0>
+	<t0>el3</t0>
+      </list>
+      <c1>child2 one</c1>
+      <c2>child2 two</c2>
+    </parent2>
+    <c2>child two</c2>
+  </parent>
+  <t4>content4</t4>
+  <t4>content5</t4>
+</root>
+
+
+  
+
+  <t4>content6</t4>
+  <t4>content7</t4>

@@ -7,15 +7,18 @@
 % 	FL = filelib:fold_files(D, ".+.xml$", true, fun(F, L) -> [F|L] end, []),
 % 	[ parse(F) || F <- FL ].
 
-
-
--define(QUOTE_VALUE(Title),
-extract(#xmlText{parents=[{Title,_},{item,_},_,_], value=V}, L) ->
-	[{Title, V}|L]). % extract episode
+parse(FName) ->
+	% parses a single RSS file
+	{R,_} = xmerl_scan:file(FName),
+	% extract episode titles, publication dates and MP3 URLs
+	L = lists:reverse(extract(R, [])),
+	% print channel title and data for first two episodes
+% 	io:format("~n>> ~p~n", [element(1,lists:split(3,L))]),
+	L.
  
 % handle 'xmlElement' tags
 extract(R, L) when is_record(R, xmlElement) ->
-	case #xmlElement.name of
+	case R#xmlElement.name of
 		enclosure ->
 			if element(1, hd(R#xmlElement.parents)) == item ->
 				FFunc = fun(X) -> X#xmlAttribute.name == url end,
@@ -31,28 +34,21 @@ extract(R, L) when is_record(R, xmlElement) ->
 		_ -> % for any other XML elements, simply iterate over children
 			lists:foldl(fun extract/2, L, R#xmlElement.content)
 	end;
-
  
 extract(#xmlText{parents=[{title,_},{channel,2},_], value=V}, L) ->
 	[{channel, V}|L]; % extract channel/audiocast title
 
+-define(QUOTE_VALUE(Title),
+extract(#xmlText{parents=[{Title,_},{item,_},_,_], value=V}, L) ->
+	[{Title, V}|L]. % extract episode
+
 ?QUOTE_VALUE(title);
 ?QUOTE_VALUE(link);
-?QUOTE_VALUE('pubDate');
-?QUOTE_VALUE('dc:date');
+?QUOTE_VALUE(pubDate);
+?QUOTE_VALUE(dc:date);
 
 
 extract(#xmlText{}, L) -> L.  % ignore any other text data
-
-parse(FName) ->
-	% parses a single RSS file
-	{R,_} = xmerl_scan:file(FName),
-	% extract episode titles, publication dates and MP3 URLs
-	L = lists:reverse(extract(R, [])),
-	% print channel title and data for first two episodes
-% 	io:format("~n>> ~p~n", [element(1,lists:split(3,L))]),
-	L.
-
 
 % 'main' function (invoked from shell, receives command line arguments)
 main() ->

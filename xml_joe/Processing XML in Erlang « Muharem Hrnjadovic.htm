@@ -1,0 +1,626 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en">
+
+<head profile="http://gmpg.org/xfn/11">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Processing XML in Erlang &laquo; Muharem Hrnjadovic</title>
+
+<link rel="stylesheet" href="http://s0.wp.com/wp-content/themes/pub/kubrick/style.css?m=1303185170g&amp;3" type="text/css" media="screen" />
+<!--[if lte IE 8]><link rel="stylesheet" href="http://s0.wp.com/wp-content/themes/pub/kubrick/ie.css?m=1303185170g" type="text/css" media="screen" /><![endif]-->
+<link rel="pingback" href="http://muharem.wordpress.com/xmlrpc.php" />
+
+<link rel="alternate" type="application/rss+xml" title="Muharem Hrnjadovic &raquo; Feed" href="http://muharem.wordpress.com/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Muharem Hrnjadovic &raquo; Comments Feed" href="http://muharem.wordpress.com/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Muharem Hrnjadovic &raquo; Processing XML in&nbsp;Erlang Comments Feed" href="http://muharem.wordpress.com/2007/08/21/processing-xml-in-erlang/feed/" />
+<script type="text/javascript">
+/* <![CDATA[ */
+function addLoadEvent(func){var oldonload=window.onload;if(typeof window.onload!='function'){window.onload=func;}else{window.onload=function(){oldonload();func();}}}
+/* ]]> */
+</script>
+<link rel="stylesheet" href="http://s0.wp.com/wp-content/themes/h4/global.css?m=1303185165g" type="text/css" />
+<script type='text/javascript' src='http://s1.wp.com/wp-includes/js/l10n.js?m=1303185159g&amp;ver=20101110'></script>
+<script type='text/javascript' src='http://s0.wp.com/wp-includes/js/jquery/jquery.js?m=1305826058g&amp;ver=1.6.1'></script>
+<script type='text/javascript' src='http://s1.wp.com/wp-includes/js/comment-reply.js?m=1303185159g&amp;ver=20090102'></script>
+<link rel='stylesheet' id='highlander-comments-css'  href='http://s1.wp.com/wp-content/mu-plugins/highlander-comments/style.css?m=1309455918g&#038;ver=20110620' type='text/css' media='all' />
+<!--[if lt IE 8]>
+<link rel='stylesheet' id='highlander-comments-ie7-css'  href='http://s0.wp.com/wp-content/mu-plugins/highlander-comments/style-ie7.css?m=1307172300g&#038;ver=20110606' type='text/css' media='all' />
+<![endif]-->
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://muharem.wordpress.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://muharem.wordpress.com/wp-includes/wlwmanifest.xml" /> 
+<link rel='index' title='Muharem Hrnjadovic' href='http://muharem.wordpress.com/' />
+<link rel='prev' title='A first look at&nbsp;Groovy' href='http://muharem.wordpress.com/2007/08/15/a-first-look-at-groovy/' />
+<link rel='next' title='Scrape the web with&nbsp;ruby' href='http://muharem.wordpress.com/2007/09/04/scrape-the-web-with-ruby/' />
+<meta name="generator" content="WordPress.com" />
+<link rel='canonical' href='http://muharem.wordpress.com/2007/08/21/processing-xml-in-erlang/' />
+<link rel='shortlink' href='http://wp.me/p222C-A' />
+<link rel="alternate" type="application/json+oembed" href="http://public-api.wordpress.com/oembed/1.0/?format=json&url=http%3A%2F%2Fmuharem.wordpress.com%2F2007%2F08%2F21%2Fprocessing-xml-in-erlang%2F&for=wpcom-auto-discovery" /><link rel="alternate" type="application/xml+oembed" href="http://public-api.wordpress.com/oembed/1.0/?format=xml&url=http%3A%2F%2Fmuharem.wordpress.com%2F2007%2F08%2F21%2Fprocessing-xml-in-erlang%2F&for=wpcom-auto-discovery" /><link rel="shortcut icon" type="image/x-icon" href="http://s1.wp.com/i/favicon-stacked.ico?m=1311620372g" sizes="16x16 24x24 32x32 48x48" />
+<link rel="icon" type="image/x-icon" href="http://s1.wp.com/i/favicon-stacked.ico?m=1311620372g" sizes="16x16 24x24 32x32 48x48" />
+<link rel="apple-touch-icon-precomposed" href="http://s0.wp.com/i/webclip.png?m=1311618114g" />
+<link rel='openid.server' href='http://muharem.wordpress.com/?openidserver=1' />
+<link rel='openid.delegate' href='http://muharem.wordpress.com/' />
+<link rel="search" type="application/opensearchdescription+xml" href="http://muharem.wordpress.com/osd.xml" title="Muharem Hrnjadovic" />
+<link rel="search" type="application/opensearchdescription+xml" href="http://wordpress.com/opensearch.xml" title="WordPress.com" />
+<style type='text/css'><!--
+body { background: url("http://s0.wp.com/wp-content/themes/pub/kubrick/images/kubrickbgcolor.gif?m=1303185170g"); }
+#page { background: url("http://s0.wp.com/wp-content/themes/pub/kubrick/images/kubrickbgwide.gif?m=1303185170g") repeat-y top !important; border: none; }
+#header { background: url("http://s0.wp.com/wp-content/themes/pub/kubrick/images/kubrickheader.gif?m=1303185170g") no-repeat bottom center; }
+#footer { background: url("http://s0.wp.com/wp-content/themes/pub/kubrick/images/kubrickfooter.gif?m=1303185170g") no-repeat bottom; border: none;}
+#header { margin: 0 !important; margin: 0 0 0 1px; padding: 1px; height: 198px; width: 758px; }
+#headerimg { margin: 7px 9px 0; height: 192px; width: 740px; }
+#headerimg h1 a, #headerimg h1 a:visited, #headerimg .description { color: ; }
+#headerimg h1 a, #headerimg .description { display:  }
+
+	--></style>	<style type="text/css">
+	/* <![CDATA[ */
+				div#likes { margin-top: 15px; }
+		.like-button { border: 1px solid #eee; padding: 2px 6px; font-size: 13px; font-family: arial, tahoma, sans-serif; }
+		#wpl-likebox { clear: left; font-size: 11px; font-family: arial, tahoma, verdana, sans-serif !important; min-height: 30px; margin: 10px 0 !important; padding: 5px 0 10px 0 !important; }
+		#wpl-button { float: left; background: url( http://s0.wp.com/i/buttonbg.png ) top left repeat-x; margin-right: 7px; border: 1px solid #d4d4d4; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; }
+		#wpl-button a { border-bottom: none !important; color: #666 !important; line-height: 130% !important; text-decoration: none !important; outline: none; float: left; padding: 3px 6px 2px 24px !important; font-size: 11px !important; background: url( http://s1.wp.com/i/likestar.png ) 6px 49.8% no-repeat; }
+		#wpl-button a:hover { border-bottom: none !important; }
+		#wpl-button.liked { background: #feffce; border: 1px solid #f3e389; }
+		#wpl-button.liked a { color: #ba871b !important; }
+		#wpl-likebox #wpl-count { min-height: 25px; line-height: 130% !important; float: left; padding-top: 4px; }
+		#wpl-likebox #wpl-avatars { clear: left; max-height: 98px; overflow: hidden; margin-top: 15px; line-height: 130% !important; }
+		#wpl-likebox #wpl-avatars img { border: none !important; }
+		#wpl-likebox #wpl-mustlogin { line-height: 14px !important; font-size: 11px; clear: left; margin-top: 5px; background: #f0f0f0; padding: 10px; width: 65%; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; }
+		#wpl-likebox #wpl-mustlogin a { color: #888; text-decoration: underline; }
+		#wpl-likebox #wpl-mustlogin p { margin: 5px 0; padding: 0 }
+		#wpl-likebox #wpl-mustlogin input.input { padding: 2px; background: #fff; font-size: 11px; font-family: inherit; border: 1px solid #ccc; -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1) inset; -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1) inset; line-height: 12px; }
+		#wpl-likebox #wpl-mustlogin input#wp-submit { border: 1px solid #ccc; font-size: 11px; background: #fafafa; repeat-x; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; padding: 2px 4px !important; line-height: 12px; }
+		#wpl-likebox #wpl-mustlogin label { position: relative; cursor: text; }
+		#wpl-likebox #wpl-mustlogin label span { position: absolute; top: 0px; left: 5px; padding: 0 !important; }
+		#wpl-likebox #wpl-mustlogin label span { top /*\**/: -10px\9; }
+	/* ]]> */
+	</style>
+	<meta name="application-name" content="Muharem Hrnjadovic" /><meta name="msapplication-window" content="width=device-width;height=device-height" /><meta name="msapplication-tooltip" content="Cool ideas revolving around computers and programming" /><meta name="msapplication-task" content="name=Subscribe;action-uri=http://muharem.wordpress.com/feed/;icon-uri=http://s1.wp.com/i/favicon-stacked.ico" /><meta name="msapplication-task" content="name=Sign up for a free blog;action-uri=http://wordpress.com/signup/;icon-uri=http://s2.wp.com/i/favicon.ico" /><meta name="msapplication-task" content="name=WordPress.com Support;action-uri=http://support.wordpress.com/;icon-uri=http://s2.wp.com/i/favicon.ico" /><meta name="msapplication-task" content="name=WordPress.com Forums;action-uri=http://forums.wordpress.com/;icon-uri=http://s2.wp.com/i/favicon.ico" />
+<script type='text/javascript' src='http://partner.googleadservices.com/gampad/google_service.js'>
+</script>
+<script type='text/javascript'>
+GS_googleAddAdSenseService("ca-pub-3443918307802676");
+GS_googleEnableAllServices();
+</script>
+<script type='text/javascript'>
+GA_googleAddSlot("ca-pub-3443918307802676", "wpcom_below_post");
+</script>
+<script type='text/javascript'>
+GA_googleFetchAds();
+</script><script type="text/javascript"> 
+	window.google_analytics_uacct = "UA-52447-2"; 
+</script>
+
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-52447-2']);
+	_gaq.push(['_setDomainName', 'wordpress.com']);
+	_gaq.push(['_initData']);
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
+	})();
+</script>
+</head>
+<body class="typekit-enabled highlander-enabled highlander-light">
+<div id="page">
+
+
+<div id="header">
+	<div id="headerimg" onclick=" location.href='http://muharem.wordpress.com';" style="cursor: pointer;">
+		<h1><a href="http://muharem.wordpress.com/">Muharem Hrnjadovic</a></h1>
+		<div class="description">Cool ideas revolving around computers and programming</div>
+	</div>
+</div>
+<hr />
+
+	<div id="content" class="widecolumn">
+
+	
+		<div class="navigation">
+			<div class="alignleft">&laquo; <a href="http://muharem.wordpress.com/2007/08/15/a-first-look-at-groovy/" rel="prev">A first look at&nbsp;Groovy</a></div>
+			<div class="alignright"><a href="http://muharem.wordpress.com/2007/09/04/scrape-the-web-with-ruby/" rel="next">Scrape the web with&nbsp;ruby</a> &raquo;</div>
+		</div>
+
+		<div class="post-36 post type-post status-publish format-standard hentry category-erlang category-parsing category-xml clear" id="post-36">
+						<h2>Processing XML in&nbsp;Erlang</h2>
+			<small>By muharem</small>
+
+			<div class="entry">
+				<h3>Introduction</h3>
+<p>This is my second stab at Erlang (see the <a href="http://muharem.wordpress.com/2007/07/31/erlang-vs-stackless-python-a-first-benchmark/">ring benchmark article</a> for my first take on it). This time around I wanted to get a sense of how well Erlang and its libraries support more mundane tasks like e.g. XML parsing.</p>
+<p>I am not a big fan of XML but it <em>is</em> the <em>lingua franca</em> of the web and any language that aspires to become &#8220;mainstream&#8221; has to support it in an efficient manner.</p>
+<p>In order to get a feeling for how well Erlang is doing in this respect I am going to repeat my <a href="http://muharem.wordpress.com/2007/08/15/a-first-look-at-groovy/">recent XML processing experiments with Groovy</a> but this time using Erlang.</p>
+<h3>Example</h3>
+<p>I&#8217;ll be doing some basic processing of RSS files. For a full example of what these look like see e.g. the <a href="http://leoville.tv/podcasts/mbw.xml">MacBreak&#8217;s weekly RSS file</a>. Here&#8217;s an excerpt (abridged for the sake of clarity):</p>
+<pre>
+ <span style="color:#7f7f7f;"> 1 </span><span style="color:#7f7f7f;">&lt;?</span><span>xml</span><span> </span><span>version</span>=<span style="color:#008b00;">"1.0"</span><span> </span><span>encoding</span>=<span style="color:#008b00;">"utf-8"</span><span style="color:#7f7f7f;">?&gt;</span>
+ <span style="color:#7f7f7f;"> 2 </span><span style="color:#008b8b;">&lt;</span><span style="color:#008b8b;">rss</span><span style="color:#008b8b;"> </span><span>version</span>=<span style="color:#008b00;">"2.0"</span><span style="color:#008b8b;">&gt;</span>
+ <span style="color:#7f7f7f;"> 3 </span>  <span style="color:#008b8b;">&lt;</span><span style="color:#008b8b;">channel</span><span style="color:#008b8b;">&gt;</span>
+ <span style="color:#7f7f7f;"> 4 </span>    <span style="color:#008b8b;">&lt;</span><span style="color:#008b8b;">title</span><span style="color:#008b8b;">&gt;</span>MacBreak Weekly<span style="color:#008b8b;">&lt;/title&gt;</span>
+ <span style="color:#7f7f7f;"> 5 </span>    <span style="color:#008b8b;">&lt;</span><span style="color:#008b8b;">item</span><span style="color:#008b8b;">&gt;</span>
+ <span style="color:#7f7f7f;"> 6 </span>      <span style="color:#008b8b;">&lt;</span><span style="color:#008b8b;">title</span><span style="color:#008b8b;">&gt;</span>MacBreak Weekly 53: Bill In A Box<span style="color:#008b8b;">&lt;/title&gt;</span>
+ <span style="color:#7f7f7f;"> 7 </span>      <span style="color:#008b8b;">&lt;</span><span style="color:#008b8b;">link</span><span style="color:#008b8b;">&gt;</span><a href="//www.podtrac.com/twit.cachefly.net/MBW-053.mp3">http://www.podtrac.com/twit.cachefly.net/MBW-053.mp3</a><span style="color:#008b8b;">&lt;/link&gt;</span>
+ <span style="color:#7f7f7f;"> 8 </span>      <span style="color:#008b8b;">&lt;</span><span style="color:#008b8b;">pubDate</span><span style="color:#008b8b;">&gt;</span>Wed, 15 Aug 2007 12:58:11 -0700<span style="color:#008b8b;">&lt;/pubDate&gt;</span>
+ <span style="color:#7f7f7f;"> 9 </span>      <span style="color:#008b8b;">&lt;</span><span style="color:#008b8b;">enclosure</span><span style="color:#008b8b;"> </span><span>url</span>=<span style="color:#008b00;">"<a href="//www.podtrac.com/twit.cachefly.net/MBW-053.mp3">http://www.podtrac.com/twit.cachefly.net/MBW-053.mp3</a>"</span><span style="color:#008b8b;"> /&gt;</span>
+ <span style="color:#7f7f7f;">10 </span>    <span style="color:#008b8b;">&lt;/item&gt;</span>
+ <span style="color:#7f7f7f;">11 </span>  <span style="color:#008b8b;">&lt;/channel&gt;</span>
+ <span style="color:#7f7f7f;">12 </span><span style="color:#008b8b;">&lt;/rss&gt;</span></pre>
+<p>Each of the potentially many <code>&lt;item&gt;</code> tags keeps the data pertaining to a single audiocast episode. What we want to extract is:</p>
+<ul>
+<li>the audiocast episode title (<code>&lt;title&gt;</code> tag)</li>
+<li>the publication date (<code>&lt;pubDate&gt;</code> tag)</li>
+<li>the URL pointing to the MP3 file (<code>&lt;link&gt;</code> tag)</li>
+</ul>
+<p>Depending on the publisher the format of the RSS file may vary slightly. The publication date is e.g. sometimes buried in a <code>&lt;dc:date&gt;</code> tag.<br />
+Likewise, the MP3 URL is sometimes not contained in a <code>&lt;link&gt;</code> tag but in the <code>url</code> attribute of the <code>&lt;enclosure&gt;</code> tag.</p>
+<p>The RSS files I will be using for testing are as follows:</p>
+<pre>
+ <span style="color:#7f7f7f;">1 </span>bbox33:audiocasts $ <span style="font-weight:bold;">pwd</span>
+ <span style="color:#7f7f7f;">2 </span>/Users/mhr/dl/audio/audiocasts
+ <span style="color:#7f7f7f;">3 </span>bbox33:audiocasts $ <span style="font-weight:bold;">find . -type f -name \*.rss</span>
+ <span style="color:#7f7f7f;">4 </span>./metadata/Cc_zwei.rss
+ <span style="color:#7f7f7f;">5 </span>./metadata/Elrep.rss
+ <span style="color:#7f7f7f;">6 </span>./metadata/Security_now_.rss
+ <span style="color:#7f7f7f;">7 </span>./metadata/Technometria.rss
+ <span style="color:#7f7f7f;">8 </span>./metadata/This_week_in_tech.rss
+ <span style="color:#7f7f7f;">9 </span>./metadata/Windows_weekly.rss</pre>
+<h3>Opening remarks</h3>
+<p>Unfortunately, the <a href="http://www.erlang.org/doc/apps/xmerl/index.html">documentation of Erlang&#8217;s XML parsing library</a> is pretty scant and &#8212; apart from the <a href="http://www.erlang.org/doc/apps/xmerl/part_frame.html">xmerl User&#8217;s Guide</a> &#8212; I could not find any tutorials on <code>xmerl</code> on the web.</p>
+<p>Again, a language aspiring to widespread adoption should have more material covering these kinds of basics.</p>
+<p>There were a few choices as to how to go about the parsing business:</p>
+<ul>
+<li> using <code>xmerl_scan</code> with or without <a href="http://www.erlang.org/doc/apps/xmerl/xmerl_examples.html">customization functions</a>.</li>
+<li> using <code>xmerl_scan</code> together with <a href="http://www.erlang.org/doc/man/xmerl_xpath.html"><code>xmerl_xpath</code></a> (an <a href="http://www.w3.org/TR/xpath">XPath</a> 1.0 implementation).</li>
+</ul>
+<p>I chose the first approach because it was better documented. Only after finishing the first cut of the parsing code did I find <code>xmerl_xpath</code> usage examples on a <a href="http://www.nabble.com/xmerl_xpath-difficulties-t4219144.html">mailing list</a> and <a href="http://hrnjad.net/src/d/xml3.erl.html">played with it</a>.</p>
+<h3><a href="http://hrnjad.net/src/d/xml2.erl.html">The code</a></h3>
+<p>The <a href="http://hrnjad.net/src/d/xml2.erl.html">Erlang code</a> that finds the RSS files listed above and parses them is as follows:</p>
+<pre>
+ <span style="color:#7f7f7f;"> 1 </span><span>-module</span>(xml2)<span style="color:#ff1493;">.</span>
+ <span style="color:#7f7f7f;"> 2 </span><span>-export</span>([main<span style="color:#00008b;font-weight:bold;">/</span><span style="color:#008b00;">1</span>])<span style="color:#ff1493;">.</span>
+ <span style="color:#7f7f7f;"> 3 </span><span>-include</span><span style="color:#ff1493;">_</span>lib(<span style="color:#008b00;">"xmerl/include/xmerl.hrl"</span>)<span style="color:#ff1493;">.</span>
+ <span style="color:#7f7f7f;"> 4 </span>
+ <span style="color:#7f7f7f;"> 5 </span>parseAll(D) <span style="color:#00008b;font-weight:bold;">-&gt;</span>
+ <span style="color:#7f7f7f;"> 6 </span>    <span style="color:#7f7f7f;">% find all RSS files underneath D</span>
+ <span style="color:#7f7f7f;"> 7 </span>    FL <span style="color:#00008b;font-weight:bold;">=</span> <span style="color:#008b8b;">filelib</span><span style="color:#ff1493;">:</span><span style="color:#008b8b;">fold</span><span style="color:#ff1493;">_</span><span style="color:#008b8b;">files</span>(D, <span style="color:#008b00;">".+.rss$"</span>, <span style="color:#00008b;font-weight:bold;">true</span>, <span style="color:#00008b;font-weight:bold;">fun</span>(F, L) <span style="color:#00008b;font-weight:bold;">-&gt;</span> [F|L] <span style="color:#00008b;font-weight:bold;">end</span>, []),
+ <span style="color:#7f7f7f;"> 8 </span>    [ parse(F) || F <span style="color:#00008b;font-weight:bold;">&lt;-</span> FL ]<span style="color:#ff1493;">.</span>
+ <span style="color:#7f7f7f;"> 9 </span>
+ <span style="color:#7f7f7f;">10 </span>parse(FName) <span style="color:#00008b;font-weight:bold;">-&gt;</span>
+ <span style="color:#7f7f7f;">11 </span>    <span style="color:#7f7f7f;">% parses a single RSS file</span>
+ <span style="color:#7f7f7f;">12 </span>    {R,<span style="color:#ff1493;">_</span>} <span style="color:#00008b;font-weight:bold;">=</span> <span style="color:#008b8b;">xmerl</span><span style="color:#ff1493;">_</span><span style="color:#008b8b;">scan</span><span style="color:#ff1493;">:</span><span style="color:#008b8b;">file</span>(FName),
+ <span style="color:#7f7f7f;">13 </span>    <span style="color:#7f7f7f;">% extract episode titles, publication dates and MP3 URLs</span>
+ <span style="color:#7f7f7f;">14 </span>    L <span style="color:#00008b;font-weight:bold;">=</span> <span style="color:#008b8b;">lists</span><span style="color:#ff1493;">:</span><span style="color:#008b8b;">reverse</span>(extract(R, [])),
+ <span style="color:#7f7f7f;">15 </span>    <span style="color:#7f7f7f;">% print channel title and data for first two episodes</span>
+ <span style="color:#7f7f7f;">16 </span>    <span style="color:#008b8b;">io</span><span style="color:#ff1493;">:</span><span style="color:#008b8b;">format</span>(<span style="color:#008b00;">"</span><span style="color:#ff1493;">~n</span><span style="color:#008b00;">&gt;&gt; </span><span style="color:#ff1493;">~p~n</span><span style="color:#008b00;">"</span>, [<span style="color:#008b8b;">element</span>(<span style="color:#008b00;">1</span>,<span style="color:#008b8b;">lists</span><span style="color:#ff1493;">:</span><span style="color:#008b8b;">split</span>(<span style="color:#008b00;">3</span>,L))]),
+ <span style="color:#7f7f7f;">17 </span>    L<span style="color:#ff1493;">.</span>
+ <span style="color:#7f7f7f;">18 </span>
+ <span style="color:#7f7f7f;">19 </span><span style="color:#7f7f7f;">% handle 'xmlElement' tags</span>
+ <span style="color:#7f7f7f;">20 </span>extract(R, L) <span style="color:#00008b;font-weight:bold;">when</span> is_record(R, xmlElement) <span style="color:#00008b;font-weight:bold;">-&gt;</span>
+ <span style="color:#7f7f7f;">21 </span>    <span style="color:#00008b;font-weight:bold;">case</span> R#xmlElement<span style="color:#ff1493;">.</span><span style="color:#ff1493;">name</span> <span style="color:#00008b;font-weight:bold;">of</span>
+ <span style="color:#7f7f7f;">22 </span>        enclosure <span style="color:#00008b;font-weight:bold;">-&gt;</span>
+ <span style="color:#7f7f7f;">23 </span>            <span style="color:#00008b;font-weight:bold;">if</span> <span style="color:#008b8b;">element</span>(<span style="color:#008b00;">1</span>, <span style="color:#008b8b;">hd</span>(R#xmlElement<span style="color:#ff1493;">.</span>parents)) <span style="color:#00008b;font-weight:bold;">==</span> item <span style="color:#00008b;font-weight:bold;">-&gt;</span>
+ <span style="color:#7f7f7f;">24 </span>                    FFunc <span style="color:#00008b;font-weight:bold;">=</span> <span style="color:#00008b;font-weight:bold;">fun</span>(X) <span style="color:#00008b;font-weight:bold;">-&gt;</span> X#xmlAttribute<span style="color:#ff1493;">.</span><span style="color:#ff1493;">name</span> <span style="color:#00008b;font-weight:bold;">==</span> url <span style="color:#00008b;font-weight:bold;">end</span>,
+ <span style="color:#7f7f7f;">25 </span>                    U <span style="color:#00008b;font-weight:bold;">=</span> <span style="color:#008b8b;">hd</span>(<span style="color:#008b8b;">lists</span><span style="color:#ff1493;">:</span><span style="color:#008b8b;">filter</span>(FFunc, R#xmlElement<span style="color:#ff1493;">.</span>attributes)),
+ <span style="color:#7f7f7f;">26 </span>                    [ {url, U#xmlAttribute<span style="color:#ff1493;">.</span>value} | L ];
+ <span style="color:#7f7f7f;">27 </span>                <span style="color:#00008b;font-weight:bold;">true</span> <span style="color:#00008b;font-weight:bold;">-&gt;</span> L
+ <span style="color:#7f7f7f;">28 </span>            <span style="color:#00008b;font-weight:bold;">end</span>;
+ <span style="color:#7f7f7f;">29 </span>        channel <span style="color:#00008b;font-weight:bold;">-&gt;</span>
+ <span style="color:#7f7f7f;">30 </span>            <span style="color:#008b8b;">lists</span><span style="color:#ff1493;">:</span><span style="color:#008b8b;">foldl</span>(<span style="color:#00008b;font-weight:bold;">fun</span> extract<span style="color:#00008b;font-weight:bold;">/</span><span style="color:#008b00;">2</span>, L, R#xmlElement<span style="color:#ff1493;">.</span>content);
+ <span style="color:#7f7f7f;">31 </span>        item <span style="color:#00008b;font-weight:bold;">-&gt;</span>
+ <span style="color:#7f7f7f;">32 </span>            ItemData <span style="color:#00008b;font-weight:bold;">=</span> <span style="color:#008b8b;">lists</span><span style="color:#ff1493;">:</span><span style="color:#008b8b;">foldl</span>(<span style="color:#00008b;font-weight:bold;">fun</span> extract<span style="color:#00008b;font-weight:bold;">/</span><span style="color:#008b00;">2</span>, [], R#xmlElement<span style="color:#ff1493;">.</span>content),
+ <span style="color:#7f7f7f;">33 </span>            [ ItemData | L ];
+ <span style="color:#7f7f7f;">34 </span>        <span style="color:#ff1493;">_</span> <span style="color:#00008b;font-weight:bold;">-&gt;</span> <span style="color:#7f7f7f;">% for any other XML elements, simply iterate over children</span>
+ <span style="color:#7f7f7f;">35 </span>            <span style="color:#008b8b;">lists</span><span style="color:#ff1493;">:</span><span style="color:#008b8b;">foldl</span>(<span style="color:#00008b;font-weight:bold;">fun</span> extract<span style="color:#00008b;font-weight:bold;">/</span><span style="color:#008b00;">2</span>, L, R#xmlElement<span style="color:#ff1493;">.</span>content)
+ <span style="color:#7f7f7f;">36 </span>    <span style="color:#00008b;font-weight:bold;">end</span>;
+ <span style="color:#7f7f7f;">37 </span>
+ <span style="color:#7f7f7f;">38 </span>extract(#xmlText{parents<span style="color:#00008b;font-weight:bold;">=</span>[{title,<span style="color:#ff1493;">_</span>},{channel,<span style="color:#008b00;">2</span>},<span style="color:#ff1493;">_</span>], value<span style="color:#00008b;font-weight:bold;">=</span>V}, L) <span style="color:#00008b;font-weight:bold;">-&gt;</span>
+ <span style="color:#7f7f7f;">39 </span>    [{channel, V}|L]; <span style="color:#7f7f7f;">% extract channel/audiocast title</span>
+ <span style="color:#7f7f7f;">40 </span>
+ <span style="color:#7f7f7f;">41 </span>extract(#xmlText{parents<span style="color:#00008b;font-weight:bold;">=</span>[{title,<span style="color:#ff1493;">_</span>},{item,<span style="color:#ff1493;">_</span>},<span style="color:#ff1493;">_</span>,<span style="color:#ff1493;">_</span>], value<span style="color:#00008b;font-weight:bold;">=</span>V}, L) <span style="color:#00008b;font-weight:bold;">-&gt;</span>
+ <span style="color:#7f7f7f;">42 </span>    [{title, V}|L]; <span style="color:#7f7f7f;">% extract episode title</span>
+ <span style="color:#7f7f7f;">43 </span>
+ <span style="color:#7f7f7f;">44 </span>extract(#xmlText{parents<span style="color:#00008b;font-weight:bold;">=</span>[{<span style="color:#008b8b;">link</span>,<span style="color:#ff1493;">_</span>},{item,<span style="color:#ff1493;">_</span>},<span style="color:#ff1493;">_</span>,<span style="color:#ff1493;">_</span>], value<span style="color:#00008b;font-weight:bold;">=</span>V}, L) <span style="color:#00008b;font-weight:bold;">-&gt;</span>
+ <span style="color:#7f7f7f;">45 </span>    [{<span style="color:#008b8b;">link</span>, V}|L]; <span style="color:#7f7f7f;">% extract episode link</span>
+ <span style="color:#7f7f7f;">46 </span>
+ <span style="color:#7f7f7f;">47 </span>extract(#xmlText{parents<span style="color:#00008b;font-weight:bold;">=</span>[{pubDate,<span style="color:#ff1493;">_</span>},{item,<span style="color:#ff1493;">_</span>},<span style="color:#ff1493;">_</span>,<span style="color:#ff1493;">_</span>], value<span style="color:#00008b;font-weight:bold;">=</span>V}, L) <span style="color:#00008b;font-weight:bold;">-&gt;</span>
+ <span style="color:#7f7f7f;">48 </span>    [{pubDate, V}|L]; <span style="color:#7f7f7f;">% extract episode publication date ('pubDate' tag)</span>
+ <span style="color:#7f7f7f;">49 </span>
+ <span style="color:#7f7f7f;">50 </span>extract(#xmlText{parents<span style="color:#00008b;font-weight:bold;">=</span>[{<span>'dc:date'</span>,<span style="color:#ff1493;">_</span>},{item,<span style="color:#ff1493;">_</span>},<span style="color:#ff1493;">_</span>,<span style="color:#ff1493;">_</span>], value<span style="color:#00008b;font-weight:bold;">=</span>V}, L) <span style="color:#00008b;font-weight:bold;">-&gt;</span>
+ <span style="color:#7f7f7f;">51 </span>    [{pubDate, V}|L]; <span style="color:#7f7f7f;">% extract episode publication date ('dc:date' tag)</span>
+ <span style="color:#7f7f7f;">52 </span>
+ <span style="color:#7f7f7f;">53 </span>extract(#xmlText{}, L) <span style="color:#00008b;font-weight:bold;">-&gt;</span> L<span style="color:#ff1493;">.</span>  <span style="color:#7f7f7f;">% ignore any other text data</span>
+ <span style="color:#7f7f7f;">54 </span>
+ <span style="color:#7f7f7f;">55 </span><span style="color:#7f7f7f;">% 'main' function (invoked from shell, receives command line arguments)</span>
+ <span style="color:#7f7f7f;">56 </span>main(A) <span style="color:#00008b;font-weight:bold;">-&gt;</span>
+ <span style="color:#7f7f7f;">57 </span>    D <span style="color:#00008b;font-weight:bold;">=</span> <span style="color:#008b8b;">atom_to_list</span>(<span style="color:#008b8b;">hd</span>(A)),
+ <span style="color:#7f7f7f;">58 </span>    parseAll(D)<span style="color:#ff1493;">.</span></pre>
+<h3>Conclusion</h3>
+<p>Erlang&#8217;s <code>filelib:fold_files()</code> function is cool and a good example of how easy things should be.</p>
+<p>On the other hand:</p>
+<ul>
+<li> it took quite a bit of time and effort to write the code above (perhaps due to my lack of experience in functional programming) and it was not fun <img src='http://s0.wp.com/wp-includes/images/smilies/icon_sad.gif?m=1303185160g' alt=':-(' class='wp-smiley' /> </li>
+<li> beauty is in the eye of the beholder as they say and the promise of being able to write clean and attractive code is a major reason to pick up a new programming language. Again, maybe it&#8217;s just me but I did not find the resulting Erlang code to be particularly attractive.</li>
+<li> the XML parser chokes reproducibly on XML files with non-ASCII character sets (try <a href="http://hrnjad.net/src/d/xml2.erl">the code</a> e.g. with the following <a href="http://www.elektrischer-reporter.de/index.php/site/rss_mp3">RSS file</a> (containing german characters))</li>
+<li> The XPath implementation appears to be incomplete: I could not use the <code>|</code> operator in an XPath expression to select several paths for example.</li>
+</ul>
+<p>Anyway, that&#8217;s just my <code>$ 0.02</code> on XML parsing with Erlang. I am not an expert by any stretch of the imagination so feel free to point to anything I may have missed.</p>
+
+<div align="center" style="margin-bottom: 10px;">
+<script type="text/javascript">
+GA_googleAddAttr("AdOpt", "1");
+GA_googleAddAttr("Origin", "extsearch");
+GA_googleAddAttr("SearchTerm", "erlang"); GA_googleAddAttr("SearchTerm", "xml"); GA_googleAddAttr("theme_bg", "ffffff"); GA_googleAddAttr("theme_text", "333333"); GA_googleAddAttr("theme_link", "0066cc"); GA_googleAddAttr("theme_border", "f9f9f9"); GA_googleAddAttr("theme_url", "114477"); GA_googleAddAttr("LangId", "1");
+GA_googleAddAttr("Autotag", "technology"); GA_googleAddAttr("Tag", "erlang"); GA_googleAddAttr("Tag", "parsing"); GA_googleAddAttr("Tag", "xml"); 
+GA_googleFillSlot("wpcom_below_post");
+</script>
+</div>
+								
+				<p class="postmetadata alt">
+					<small>
+												This entry was posted  on August 21, 2007 at 6:21 pm and is filed under <a href="http://en.wordpress.com/tag/erlang/" title="View all posts in erlang" rel="category tag">erlang</a>, <a href="http://en.wordpress.com/tag/parsing/" title="View all posts in parsing" rel="category tag">parsing</a>, <a href="http://en.wordpress.com/tag/xml/" title="View all posts in XML" rel="category tag">XML</a>.						You can follow any responses to this entry through the <a href='http://muharem.wordpress.com/2007/08/21/processing-xml-in-erlang/feed/'>RSS 2.0</a> feed.
+													You can <a href="#respond">leave a response</a>, or <a href="http://muharem.wordpress.com/2007/08/21/processing-xml-in-erlang/trackback/" rel="trackback">trackback</a> from your own site.
+						
+					</small>
+				</p>
+
+			</div>
+					</div>
+
+	<div id="wpl-likebox"><div id="wpl-button"><a href='http://muharem.wordpress.com/2007/08/21/processing-xml-in-erlang/?like=1&amp;_wpnonce=e80e9ff6da' title='I like this post' class='like needs-login' rel='nofollow'><span>Like</span></a></div><div id="wpl-count">Be the first to like this post.</div></div>
+<!-- You can start editing here. -->
+	<h3 id="comments">8 Responses to &#8220;Processing XML in&nbsp;Erlang&#8221;</h3>
+
+	<ol class="commentlist">
+					<li class="comment even thread-even depth-1 highlander-comment" id="comment-2158">
+			<img alt='' src='http://0.gravatar.com/avatar/85ed943883b5afa0af65db19b9ac9dc1?s=32&amp;d=identicon&amp;r=G' class='avatar avatar-32' height='32' width='32' />			<cite><a href='http://weblog.hypotheticalabs.com' rel='external nofollow' class='url'>Kevin Smith</a></cite> Says:						<br />
+
+			<small class="commentmetadata"><a href="#comment-2158" title="">August 21, 2007 at 6:57 pm</a> | <a class='comment-reply-link' href='/2007/08/21/processing-xml-in-erlang/?replytocom=2158#respond' onclick='return addComment.moveForm("comment-2158", "2158", "respond", "36")'>Reply</a> </small>
+
+			<p>I&#8217;m trying to port Mark Pilgrim&#8217;s FeedParser lib from Python to Erlang and I&#8217;ve felt the pain of XML parsing in Erlang, too. You might want to try the erlsom XML library. I found it&#8217;s SAX interface to be what I was used to seeing coming from a Java/Python background.</p>
+<p>Also, you might want to try running the string you&#8217;re about to parse through xmerl_ucs:to_utf8/1 before parsing it. That cleaned up a bunch of problems I was having dealing with non-ASCII chars.</p>
+<p>Now, if there was a way to parse XML files without having to read them all in memory at once, I&#8217;d be golden.</p>
+</li>
+			<li class="comment byuser comment-author-muharem bypostauthor odd alt thread-odd thread-alt depth-1 highlander-comment" id="comment-2159">
+			<img alt='' src='http://1.gravatar.com/avatar/f1a09b9c485088ddd8eaf7809d5b6873?s=32&amp;d=identicon&amp;r=G' class='avatar avatar-32' height='32' width='32' />			<cite><a href='http://muharem.wordpress.com/' rel='external nofollow' class='url'>muharem</a></cite> Says:						<br />
+
+			<small class="commentmetadata"><a href="#comment-2159" title="">August 21, 2007 at 7:07 pm</a> | <a class='comment-reply-link' href='/2007/08/21/processing-xml-in-erlang/?replytocom=2159#respond' onclick='return addComment.moveForm("comment-2159", "2159", "respond", "36")'>Reply</a> </small>
+
+			<p>Hello Kevin, thank you very much for your pointers! I&#8217;ll have a look.</p>
+</li>
+			<li class="comment even thread-even depth-1 highlander-comment" id="comment-2169">
+			<img alt='' src='http://1.gravatar.com/avatar/51eb6041b8c03de41beb399f1b01125d?s=32&amp;d=identicon&amp;r=G' class='avatar avatar-32' height='32' width='32' />			<cite><a href='http://startupflames.com' rel='external nofollow' class='url'>startupflames.com</a></cite> Says:						<br />
+
+			<small class="commentmetadata"><a href="#comment-2169" title="">August 22, 2007 at 1:57 am</a> | <a class='comment-reply-link' href='/2007/08/21/processing-xml-in-erlang/?replytocom=2169#respond' onclick='return addComment.moveForm("comment-2169", "2169", "respond", "36")'>Reply</a> </small>
+
+			<p>I just wish erlang had better standard libs.  String parsing methods in the html modules?</p>
+</li>
+			<li class="comment odd alt thread-odd thread-alt depth-1 highlander-comment" id="comment-2182">
+			<img alt='' src='http://0.gravatar.com/avatar/0d86f90194df57b445bf0c0ac9c31fae?s=32&amp;d=identicon&amp;r=G' class='avatar avatar-32' height='32' width='32' />			<cite>ahmed_ali</cite> Says:						<br />
+
+			<small class="commentmetadata"><a href="#comment-2182" title="">August 22, 2007 at 4:02 pm</a> | <a class='comment-reply-link' href='/2007/08/21/processing-xml-in-erlang/?replytocom=2182#respond' onclick='return addComment.moveForm("comment-2182", "2182", "respond", "36")'>Reply</a> </small>
+
+			<p>Hi there,</p>
+<p>For XML parsing, you can try erlsom, which I found to be faster, produce smaller output and has a better implementation for SAX. </p>
+<p>Best regards,</p>
+<p>Ahmed</p>
+</li>
+			<li class="pingback even thread-even depth-1 highlander-comment" id="comment-5155">
+						<cite><a href='http://www.joeandmotorboat.com/2008/07/17/simple-example-of-xml-parsing-with-erlang-and-erlsom/' rel='external nofollow' class='url'>Simple Example of XML Parsing With Erlang and Erlsom.</a></cite> Says:						<br />
+
+			<small class="commentmetadata"><a href="#comment-5155" title="">July 17, 2008 at 8:54 pm</a> | <a class='comment-reply-link' href='/2007/08/21/processing-xml-in-erlang/?replytocom=5155#respond' onclick='return addComment.moveForm("comment-5155", "5155", "respond", "36")'>Reply</a> </small>
+
+			<p>[...] The pattern matching in Erlang and Erlsom makes parsing pretty easy although I have heard that using Erlang alone to parse XML is troublesome. [...]</p>
+</li>
+			<li class="comment odd alt thread-odd thread-alt depth-1 highlander-comment" id="comment-5417">
+			<img alt='' src='http://0.gravatar.com/avatar/240105ffb4907f6c8db294a09f02c046?s=32&amp;d=identicon&amp;r=G' class='avatar avatar-32' height='32' width='32' />			<cite>anon</cite> Says:						<br />
+
+			<small class="commentmetadata"><a href="#comment-5417" title="">December 6, 2009 at 10:00 pm</a> | <a class='comment-reply-link' href='/2007/08/21/processing-xml-in-erlang/?replytocom=5417#respond' onclick='return addComment.moveForm("comment-5417", "5417", "respond", "36")'>Reply</a> </small>
+
+			<p>If performance or memory usage is important for XML tasks, check out vtd-xml</p>
+</li>
+			<li class="comment even thread-even depth-1 highlander-comment" id="comment-6433">
+			<img alt='' src='http://1.gravatar.com/avatar/39e43c473549296b45b72ecddc7c8ce2?s=32&amp;d=identicon&amp;r=G' class='avatar avatar-32' height='32' width='32' />			<cite>lonewolf</cite> Says:						<br />
+
+			<small class="commentmetadata"><a href="#comment-6433" title="">March 20, 2011 at 9:32 am</a> | <a class='comment-reply-link' href='/2007/08/21/processing-xml-in-erlang/?replytocom=6433#respond' onclick='return addComment.moveForm("comment-6433", "6433", "respond", "36")'>Reply</a> </small>
+
+			<p>Your parsing code could be much less verbose. Here&#8217;s my version:</p>
+<p><a href="http://pastebin.com/nnKbjdjh" rel="nofollow">http://pastebin.com/nnKbjdjh</a></p>
+<p>Don&#8217;t give up on Erlang. Once you&#8217;ve overcome the initial pain of the syntax and different mode of thinking you&#8217;ll realize how incredibly powerful it is.</p>
+</li>
+			<li class="comment odd alt thread-odd thread-alt depth-1 highlander-comment" id="comment-6517">
+			<img alt='' src='http://0.gravatar.com/avatar/2f03bd43711cfda4267ff6e8aa62b98a?s=32&amp;d=identicon&amp;r=G' class='avatar avatar-32' height='32' width='32' />			<cite>Kshitij Lauria</cite> Says:						<br />
+
+			<small class="commentmetadata"><a href="#comment-6517" title="">July 21, 2011 at 5:56 pm</a> | <a class='comment-reply-link' href='/2007/08/21/processing-xml-in-erlang/?replytocom=6517#respond' onclick='return addComment.moveForm("comment-6517", "6517", "respond", "36")'>Reply</a> </small>
+
+			<p>libexpat is used for xml parsing in ejabberd. Our custom servers handle tens of thousands of active connections each. You can find libexpat (expat_erl.so) in any ejabberd source distribution. You will need to load it using</p>
+<p>erl_ddll:load_driver(&#8220;.&#8221;, &#8220;expat_erl&#8221;).</p>
+<p>in your initialization code. The ejabberd source distribution also includes the files xml_stream.erl and xml.erl which provide an API to the library. For instance you can use xml_stream:parse_element(Data) to get an xml term, that you can then use the methods in xml.erl to process. No XPath, but if nice native Erlang API instead.</p>
+</li>
+	
+	</ol>
+
+	<div class="navigation">
+		<div class="alignleft"></div>
+		<div class="alignright"></div>
+	</div>
+
+ 
+
+
+								<div id="respond">
+				<h3 id="reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/2007/08/21/processing-xml-in-erlang/#respond" style="display:none;">Cancel reply</a></small></h3>
+									<form action="http://muharem.wordpress.com/wp-comments-post.php" method="post" id="commentform">
+																										
+
+
+												
+<input type="hidden" name="hc_post_as" id="hc_post_as" value="guest" />
+
+<div class="comment-form-field comment-textarea">
+	<label for="comment">Enter your comment here...</label>
+	<div id="comment-form-comment"><textarea id="comment" name="comment"></textarea></div>
+</div>
+
+<div id="comment-form-identity">
+
+	<div id="comment-form-nascar">
+		<ul>
+			<li class="selected"><a href="#comment-form-guest" title="Guest" id="postas-guest" class="social_buttons sb_24 sb_guest"><span>Guest</span></a></li>
+			<li><a href="#comment-form-wordpress" title="Log In" id="postas-wordpress" class="social_buttons sb_24 sb_wordpress"><span>Log In</span></a></li>
+			<li><a href="#comment-form-load-service:Twitter" title="Log In" id="postas-twitter" class="social_buttons sb_24 sb_twitter"><span>Log In</span></a></li>
+			<li><a href="#comment-form-load-service:Facebook" title="Log In" id="postas-facebook" class="social_buttons sb_24 sb_facebook"><span>Log In</span></a></li>
+		</ul>
+	</div>
+
+	<div id="comment-form-guest" class="comment-form-service selected">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="http://www.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=25&d=mm" alt="Gravatar" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<div class="comment-form-field comment-form-email">
+					<label for="email">Email <span class="required">(required)</span> <span class="nopublish">(Not published)</span></label>
+					<div class="comment-form-input"><input id="email" name="email" type="text" value="" /></div>
+				</div>
+				<div class="comment-form-field comment-form-author">
+					<label for="author">Name <span class="required">(required)</span></label>
+					<div class="comment-form-input"><input id="author" name="author" type="text" value="" /></div>
+				</div>
+				<div class="comment-form-field comment-form-url">
+					<label for="url">Website</label>
+					<div class="comment-form-input"><input id="url" name="url" type="text" value="" /></div>
+				</div> 
+			</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-wordpress" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="http://s2.wp.com/wp-content/mu-plugins/highlander-comments/images/wplogo.png?m=1303185162g" alt="WordPress.com Logo" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+					<p id="wordpress-login-first">Please log in to WordPress.com to post a comment to your blog.</p>
+				<iframe id="wordpress-login-iframe" data-srcurl="http://muharem.wordpress.com/wp-login.php?redirect_to=http%3A%2F%2Fmuharem.wordpress.com%2Fhighlander.login%2F&#038;action=highlander-login&#038;skin=light"></iframe>
+				</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-twitter" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="http://www.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=25&d=mm" alt="Twitter picture" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="twitter_avatar" id="twitter-avatar" class="comment-meta-twitter" value="" />
+				<input type="hidden" name="twitter_user_id" id="twitter-user_id" class="comment-meta-twitter" value="" />
+				<input type="hidden" name="twitter_access_token" id="twitter-access_token" class="comment-meta-twitter" value="" />
+				<p class="comment-form-posting-as"><strong></strong> You are commenting using your Twitter account. <span class="comment-form-log-out">(<a href="javascript:HighlanderComments.doExternalLogout( 'twitter' );">Log Out</a>)</span></p>
+			</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-facebook" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="http://www.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=25&d=mm" alt="Facebook photo" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="fb_avatar" id="facebook-avatar" class="comment-meta-facebook" value="" />
+				<input type="hidden" name="fb_user_id" id="facebook-user_id" class="comment-meta-facebook" value="" />
+				<input type="hidden" name="fb_access_token" id="facebook-access_token" class="comment-meta-facebook" value="" />
+				<p class="comment-form-posting-as"><strong></strong> You are commenting using your Facebook account. <span class="comment-form-log-out">(<a href="javascript:HighlanderComments.doExternalLogout( 'facebook' );">Log Out</a>)</span></p>
+			</div>
+	
+		</div>
+	</div>
+
+
+	<div id="comment-form-load-service" class="comment-form-service"> 
+		<p>Connecting to %s</p> 
+	</div>
+
+	
+</div>
+
+
+<div id="comment-form-subscribe"> 
+<p class="comment-subscription-form"><input type="checkbox" name="subscribe" id="subscribe" value="subscribe" style="width: auto;" tabindex="6"/> <label class="subscribe-label" id="subscribe-label" for="subscribe">Notify me of follow-up comments via email.</label></p><p class="comment-subscription-form"><input type="checkbox" name="subscribe_blog" id="subscribe_blog" value="subscribe" style="width: auto;" tabindex="7"/> <label class="subscribe-label" id="subscribe-blog-label" for="subscribe_blog">Notify me of new posts via email.</label></p></div>
+												<p class="form-submit">
+							<input name="submit" type="submit" id="comment-submit" value="Post Comment" />
+							<input type='hidden' name='comment_post_ID' value='36' id='comment_post_ID' />
+<input type='hidden' name='comment_parent' id='comment_parent' value='0' />
+						</p>
+						
+<input type="hidden" name="genseq" value="1311659601" />
+<p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="8304b2b90d" /></p><script type='text/javascript' src='http://s2.wp.com/wp-content/mu-plugins/akismet-2.5/form.js?m=1308783979g&amp;ver=1'></script>
+<p style="display: none;"><input type="hidden" id="ak_js" name="ak_js" value="163"/></p>					</form>
+							</div><!-- #respond -->
+			<div style="clear: both"></div>			
+
+	
+	</div>
+
+
+<hr />
+<div id="footer">
+	<p>
+		Theme: <a href="http://theme.wordpress.com/themes/kubrick/">Kubrick</a>. <a href="http://wordpress.com/?ref=footer" rel="generator">Blog at WordPress.com</a>. 
+		<br /><a href="http://muharem.wordpress.com/feed/">Entries (RSS)</a> and <a href="http://muharem.wordpress.com/comments/feed/">Comments (RSS)</a>.	</p>
+</div>
+</div>
+
+<script type="text/javascript">
+// <![CDATA[
+(function() {
+try{
+  if ( window.external &&'msIsSiteMode' in window.external) {
+    if (window.external.msIsSiteMode()) {
+      var jl = document.createElement('script');
+      jl.type='text/javascript';
+      jl.async=true;
+      jl.src='/wp-content/plugins/ie-sitemode/custom-jumplist.php';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(jl, s);
+    }
+  }
+}catch(e){}
+})();
+// ]]>
+</script><script type="text/javascript">_qoptions={qacct:'p-18-mFEk4J448M',labels:'language.en,type.wpcom'};</script>
+<script type="text/javascript" src="http://edge.quantserve.com/quant.js"></script>
+<noscript><p><img class="robots-nocontent" src="http://pixel.quantserve.com/pixel/p-18-mFEk4J448M.gif?labels=language.en%2Ctype.wpcom" style="display:none" height="1" width="1" alt="" /></p></noscript>
+	<script type="text/javascript">
+	/* <![CDATA[ */
+		jQuery( function() {
+			
+			jQuery('#wpl-button > a.like').click( function(e) {
+				e.preventDefault();
+				
+				jQuery('#wpl-mustlogin').remove();
+
+				jQuery.post( 'http://muharem.wordpress.com/wp-admin/admin-ajax.php', { 
+					'action': 'wpl_record_stat',
+					'stat_name': 'loggedout_like_click'
+				} );
+
+				var tenMins = new Date();
+				tenMins.setTime( tenMins.getTime() + 600000 );
+				document.cookie = 'wpl_rand=a010ebbf6c; expires=' + tenMins.toGMTString() + '; domain=wordpress.com; path=/;';
+				
+				jQuery('#wpl-count').after( '\
+					<div id="wpl-mustlogin"> \
+						<form action="https://muharem.wordpress.com/wp-login.php" method="post"> \
+							<p>Just one more step to like this post:</p> \
+							<label><span>Username</span> <input type="text" name="log" id="user_login" class="input" value="" size="20" tabindex="80" /></label> \
+							<label><span>Password</span> <input type="password" name="pwd" id="user_pass" class="input" value="" size="20" tabindex="81" /></label> \
+							<input type="submit" name="wp-submit" id="wp-submit" class="button-primary" value="Log In" tabindex="82" /> \
+							<input type="hidden" name="redirect_to" value="http://muharem.wordpress.com/2007/08/21/processing-xml-in-erlang/?like=1" /> \
+							<input type="hidden" name="wpl_rand" value="a010ebbf6c" /> \
+							<p>Not a member yet? <a href="http://wordpress.com/signup/?ref=likebox" id="wpl-signup-link">Sign up with WordPress.com</a></p> \
+						</form> \
+					</div> \
+				');
+				
+				jQuery('#wpl-mustlogin').hide().slideDown('fast');
+			} );
+			
+			jQuery('#wpl-mustlogin input.input').live( 'focus', function() {
+				jQuery(this).prev().hide();
+			}).live( 'blur', function() {
+				if ( jQuery(this).val() == '' )
+					jQuery(this).prev().show();
+			});
+			
+			jQuery('#wpl-mustlogin input#wp-submit').live( 'click', function(e) {
+				e.preventDefault();
+				
+				jQuery.post( 'http://muharem.wordpress.com/wp-admin/admin-ajax.php', { 
+					'action': 'wpl_record_stat',
+					'stat_name': 'loggedout_login_submit'
+				}, function() {
+					jQuery('#wpl-mustlogin form').submit();
+				} );
+			});			
+			
+			jQuery('#wpl-mustlogin a#wpl-signup-link').live( 'click', function(e) {
+				e.preventDefault();
+				
+				var link = jQuery(this).attr('href');
+				
+				jQuery.post( 'http://muharem.wordpress.com/wp-admin/admin-ajax.php', { 
+					'action': 'wpl_record_stat',
+					'stat_name': 'loggedout_signup_click'
+				}, function() {
+					location.href = link;
+				} );
+			});					
+			
+		});
+	/* ]]> */
+	</script>
+<script type='text/javascript' src='http://s.gravatar.com/js/gprofiles.js?w&#038;ver=MU'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var WPGroHo = {
+	my_hash: ""
+};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://s1.wp.com/wp-content/mu-plugins/gravatar-hovercards/wpgroho.js?m=1311367662g&amp;ver=MU'></script>
+	<div style="display:none">
+	<div class="grofile-hash-map-85ed943883b5afa0af65db19b9ac9dc1">
+	</div>
+	<div class="grofile-hash-map-f1a09b9c485088ddd8eaf7809d5b6873">
+	</div>
+	<div class="grofile-hash-map-51eb6041b8c03de41beb399f1b01125d">
+	</div>
+	<div class="grofile-hash-map-0d86f90194df57b445bf0c0ac9c31fae">
+	</div>
+	<div class="grofile-hash-map-240105ffb4907f6c8db294a09f02c046">
+	</div>
+	<div class="grofile-hash-map-39e43c473549296b45b72ecddc7c8ce2">
+	</div>
+	<div class="grofile-hash-map-2f03bd43711cfda4267ff6e8aa62b98a">
+	</div>
+	</div>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var HighlanderComments = {
+	loggingInText: "Logging In&hellip;",
+	submittingText: "Posting Comment&hellip;",
+	postCommentText: "Post Comment",
+	connectingToText: "Connecting to %s",
+	commentingAsText: "%1$s: You are commenting using your %2$s account.",
+	logoutText: "Log Out",
+	loginText: "Log In",
+	connectURL: "http://muharem.wordpress.com/public.api/connect/?action=request",
+	homeURL: "http://muharem.wordpress.com/",
+	postID: "36",
+	gravDefault: "identicon",
+	enterACommentError: "Please enter a comment",
+	enterEmailError: "Email address required",
+	invalidEmailError: "Invalid email address",
+	enterAuthorError: "Name required"
+};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://s0.wp.com/wp-content/mu-plugins/highlander-comments/script.js?m=1309455918g&amp;ver=20110616d'></script>
+<script type="text/javascript" src="http://b.scorecardresearch.com/beacon.js"></script><script type="text/javascript">try{COMSCORE.beacon({c1:2,c2:7518284});}catch(e){}</script><noscript><p class="robots-nocontent"><img src="http://b.scorecardresearch.com/p?cj=1c1=2&#038;c2=7518284" alt="" style="display:none" width="1" height="1" /></p></noscript><script src="http://s.stats.wordpress.com/w.js?20" type="text/javascript"></script>
+<script type="text/javascript">
+st_go({'blog':'484506','v':'wpcom','user_id':'0','post':'36','subd':'muharem'});
+ex_go({'crypt':'UE5XaFBLcG9HLE5XPUhlbC8mTGtZTEljbjFHaG1sLDROVEFlVVYuP2ZvMmV3UjN0dSZwJjd8U1lOTnQlWVM4R1NiL0Q5P08zJlstS1JlcV8wZzV8YkE0JjR6T1Fud1Ftflh+emp+QXhPTC8lLzYmfF9UMzUsRlttdFdnSXhuYVc2SER6P2ZbK118d0JpZTBRTDVrcTF1YmQzJX5sZ3hNZlc5bUU/SnlNelUucDNTaFsvMksmUyZ1UjdQMDluYmo4UUMtPWpnNU9QSGZZYitoWHxWQk5wdW55OUdhYzBCPWhBVWlTQTBZXW1pYkY5Ynom'});
+addLoadEvent(function(){linktracker_init('484506',36);});
+	</script>
+</body>
+</html>

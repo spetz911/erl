@@ -19,36 +19,50 @@ run(FileName) ->
 
 %% Start "FutureQuote" creates a new, empty key-value list
 %% for the quote
-event(_Event = {startElement, _, "tdmn_main_config", _, _}, 
+event(_Event = {startElement, _, "root", _, _}, 
       _Location, 
       _State = {Quotes, _}) ->
     {[[]|Quotes], ""};
 
-event(_Event = {startElement, _, "daemons", _, _}, 
+event(_Event = {endElement, _, "root", _}, 
+      _Location,
+      _State = {[H|Quotes], _}) ->
+    io:fwrite("Finish = ~p~n", [_State]),
+    io:fwrite("H = ~p~n", [H]),
+    io:fwrite("Quote = ~p~n", [Quotes]),
+
+    {{"root",lists:reverse(H ++ Quotes)}, ""};
+
+event(_Event = {startElement, _, "list", _, _}, 
       _Location, 
       _State = {Quotes, _}) ->
     {[[]|Quotes], ""};
 
-event(_Event = {endElement, _, "daemons", _}, 
+event(_Event = {endElement, _, "list", _}, 
       _Location, 
-      _State = {[Last|Quotes], _}) ->
+      _State = {[Last,Quotes|Rest], _}) ->
     io:fwrite("FUCK!!!~n"),
-    {[{"daemons",Last}|Quotes], ""};
- %   {[[]|Quotes], ""};
+%    {[{"list",lists:reverse(Quotes)}], ""};
+    {[[],{"list",lists:reverse(Last)}|Quotes ++ Rest], ""};
 
-event(_Event = {startElement, _, "filter", _, _}, 
+%   {[[]|Quotes], ""};
+
+event(_Event = {startElement, _, "parent", _, _}, 
       _Location, 
       _State = {Quotes, _}) ->
     {[[]|Quotes], ""};
 
-event(_Event = {endElement, _, "filter", _}, 
-      _Location, 
-      _State = {[Last|Quotes], _}) ->
+event(_Event = {endElement, _, "parent", _}, 
+      _Location,
+      _State = {[Last,Quotes|Rest], _}) ->
     io:fwrite("Event = ~p~n", [_Event]),
     io:fwrite("Loc = ~p~n", [_Location]),
     io:fwrite("Last = ~p~n", [Last]),
     io:fwrite("Quote = ~p~n", [Quotes]),
-    {[{"filter",Last}|Quotes], ""};
+    io:fwrite("Rest = ~p~n", [Rest]),
+    Res = {[[],{"parent",lists:reverse(Last)}|Quotes ++ Rest], ""},
+    io:fwrite("Res = ~p~n", [Res]),
+    Res;
 
 %% Characters are stores in the parser state
 event(_Event = {characters, Chars}, 
@@ -56,24 +70,16 @@ event(_Event = {characters, Chars},
       _State = {Quotes, _}) ->
     {Quotes, Chars};
 
-?QUOTE_VALUE("snmp_oid");
-?QUOTE_VALUE("adm_addr");
-?QUOTE_VALUE("adm_port");
-?QUOTE_VALUE("log");
-?QUOTE_VALUE("vips_pool");
-?QUOTE_VALUE("exec_dir");
-?QUOTE_VALUE("listen");
-
-?QUOTE_VALUE("destination");
-?QUOTE_VALUE("protocol");
-?QUOTE_VALUE("socket");
-?QUOTE_VALUE("buffer_file");
-?QUOTE_VALUE("touple_size");
-?QUOTE_VALUE("http_ports");
-?QUOTE_VALUE("referer_timeout");
+?QUOTE_VALUE("t0");
+?QUOTE_VALUE("t1");
+?QUOTE_VALUE("t2");
+?QUOTE_VALUE("t3");
+?QUOTE_VALUE("t4");
+?QUOTE_VALUE("c1");
+?QUOTE_VALUE("c2");
 % ?QUOTE_VALUE("filter");
 
-% ?QUOTE_VALUE("daemons");
+
 
 %% Catch-all. Pass state on as-is    
 event(_Event, _Location, State) ->
