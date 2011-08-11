@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <t1 a = "1.0">content1</t1>
+  <t2>content2</t2>
+  <parent>
+    <c1>child one</c1>
+  </parent>
+  
+  <t4></t4>
+  <t4>content5</t4>
+
+</root>
+
