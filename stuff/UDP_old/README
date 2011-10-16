@@ -1,0 +1,3 @@
+./test.sh Text   # testing with Text
+./test.sh clean  # clean log
+./clean.sh       # clean erl process

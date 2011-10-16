@@ -1,0 +1,11 @@
+# run:
+./run.sh > sh.log
+cat sh.log 
+# result:
+rdr@spetz
+ber@spetz
+"Hello, man!"
+"Hello, woman!"
+"bye"
+"bye"
+

@@ -1,0 +1,14 @@
+[     [{"proto",<<"tcp">>},{"port",<<"80">>}],
+      [{"proto",<<"tcp">>},{"addr",<<"192.168.0.10">>},{"port",<<"8090">>}],
+      [{"accept",<<"User-Agent">>},
+       {"accept",<<"Cookie">>},
+       {"accept",<<"Referer">>}],
+      {"log",<<"/var/log/rdr_processor_1.log">>},
+      {"socket",<<"/tmp/rdr_processor_1.sock">>},
+      {"buffer_file",<<"/var/tdmn/rdr_buf_1">>},
+      {"touple_size",<<"200">>},
+      [{"http_ports",<<"80,8080">>},
+       [{"net",<<"192.168.0.0/24">>},{"ip",<<"10.10.0.1">>}],
+       {"referer_timeout",<<"3">>}]
+]
+

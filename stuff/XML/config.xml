@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tdmn_main_config>  <!-- </tdmn_main_config> xsi:noNamespaceSchemaLocation="tdmn_main.xsd"> -->
+
+	<!-- Конфигурация системы управления кластером -->
+
+	<!-- SNMP OID для SNMP traps -->
+	<snmp_oid>1,3,6,1,4,1,3454,2,100,1</snmp_oid>
+
+	<!-- Адрес административной консоли (только TCP) -->
+	<adm_addr>127.0.0.1</adm_addr>
+	<adm_port>9999</adm_port>
+
+	<!-- Log file path -->
+	<log>conf.log</log>
+
+	<!-- Пул VIP адресов -->
+	<vips_pool>
+		<vip>192.168.0.1</vip>
+		<vip>192.168.0.2</vip>
+	</vips_pool>
+
+	<!-- Директория исполняемых файлов процессоров и агрегатора -->
+	<exec_dir>./</exec_dir>
+
+	<!-- Описание локальных демонов (агрегаторов и процессоров) -->
+	<daemons>
+		<rdr_processor path='udp.py' port_in='9000' port_out='9001' > <!-- имя исполняемого файла -->
+			<!--
+				Прослушиваемый порт для входящих сообщений от
+				различных DPI ко всем возможным для текущего узла
+				процессорам и/или агрегаторам. Процессоры должны
+				слушать на всех присвоенных VIP, но только на
+				указанных для них портах.
+			-->
+			<listen>
+				<proto>tcp</proto>
+				<port>80</port>
+			</listen>
+
+			<!-- Адрес и протокол назначения для исходящего трафика -->
+			<destination>
+				<proto>tcp</proto>
+				<addr>192.168.0.10</addr>
+				<port>8090</port>
+			</destination>
+
+			<!--
+				Обработка протокола DPI (применимо только для
+				процессоров, игнорируется если указано для
+				агрегатора)
+			-->
+			<protocol>
+				<accept>User-Agent</accept>
+				<accept>Cookie</accept>
+				<accept>Referer</accept>
+			</protocol>
+
+			<!-- Log file path -->
+			<log>/var/log/rdr_processor_1.log</log>
+
+			<!-- UNIX сокет для системы управления кластером -->
+			<socket>/tmp/rdr_processor_1.sock</socket>
+
+			<!--
+				файл временного хранения сообщений в случае если
+				пропадает соединение с принимающей стороной.
+			-->
+			<buffer_file>/var/tdmn/rdr_buf_1</buffer_file>
+
+			<!--
+				Размер группы агрегирования сессий (применимо только
+				для процессоров, игнорируется если указано для
+				агрегатора)
+			-->
+			<touple_size>200</touple_size>
+
+			<!--
+				Описание фильтров (применимо только для
+				процессоров, игнорируется если указано для
+				агрегатора)
+			-->
+			<filter>
+				<!--
+					Список портов для учета HTTP сессий (только
+					если применимо для данного протокола DPI,
+					игнорируется в противном случае)
+				-->
+				<http_ports>80,8080</http_ports>
+				<urls mode='white' re='pcre'>
+					<url>^http://[\w\-\.]+\/?$</url>
+					<url>index\.(htm|html|php|pl)$</url>
+				</urls>
+				<block mode='black'>
+					<net>192.168.0.0/24</net>
+					<ip>10.10.0.1</ip>
+				</block>
+				<referer_timeout>3</referer_timeout>
+			</filter>
+		</rdr_processor>
+		<ber_processor path='udp.py' port_in='9000' port_out='9001' > <!-- имя исполняемого файла -->
+			<filter>
+				<http_ports>80,8080</http_ports>
+				<referer_timeout>3</referer_timeout>
+			</filter>
+		</ber_processor>
+	</daemons>
+</tdmn_main_config>
+
+
+		<!-- XXX_processor path='udp.py' port='9005'>
+	
+		</XXX_processor -->
+		<!-- aggregator path='udp.py' port='9006'>
+		</aggregator -->

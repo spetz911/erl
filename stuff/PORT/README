@@ -1,0 +1,8 @@
+oleg@spetz:~/project/PORT$ make
+oleg@spetz:~/project/PORT$ erl
+Erlang R13B03 (erts-5.7.4) [source] [smp:4:4] [rq:4] [async-threads:0] [hipe] [kernel-poll:false]
+
+Eshell V5.7.4  (abort with ^G)
+1> c1:start("./pr").
+"ko\n"
+

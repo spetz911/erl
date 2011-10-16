@@ -1,0 +1,9 @@
+# can parse a stream: xml_tree:stream(Bin)
+# run:
+erl -noshell -run xml_tree test test.xml -s erlang halt
+# run2:
+make
+make run
+# load records:
+rr("xml_tree.hlr").
+

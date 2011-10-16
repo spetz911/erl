@@ -1,0 +1,12 @@
+# different libs with different JSON objects
+# rfc4627 -> {obj, [ {key:value}, ... ]}
+# ejson   -> {[ {key:value}, ... ]}
+
+rfc4627:encode({obj,[{"http_ports",<<"80,8080">>},{"referer_timeout",<<"3">>}]}). 
+"{\"http_ports\":\"80,8080\",\"referer_timeout\":\"3\"}"
+
+ejson:encode({[{<<"foo">>, [<<"bar">>]}, {<<"baz">>, 123}]}).     
+<<"{\"foo\":[\"bar\"],\"baz\":123}">>
+
+
+

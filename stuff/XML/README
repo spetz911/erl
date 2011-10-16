@@ -1,0 +1,14 @@
+erl
+c(xml_tree).
+xml_tree:test("config.xml").
+#==============================
+make clean
+make run
+cat erl.log
+cat py.log
+
+
+# udp_erlang_port=9000
+# XXX wait 3sec
+
+

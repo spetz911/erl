@@ -1,0 +1,1 @@
+-record(space_id, {key, hash}).
